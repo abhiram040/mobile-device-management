@@ -14,7 +14,7 @@ CLASSES = \
 	AccountManagement.java \
 	ServerMessageHandler.java \
 	Bundle.java \
-	Builder.java \
+	ResponseHandler.java \
 	BundleManagement.java \
 	MenuOption.java \
 	ServiceAccount.java \
