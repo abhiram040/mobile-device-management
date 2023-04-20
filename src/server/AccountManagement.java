@@ -36,6 +36,7 @@ public class AccountManagement implements PropertyChangeListener
     User user;
     Bundle bundle;
     ServiceAccount account;
+    boolean isSuccessful = false;
     // case wise handling of message passed down by server
     switch(messageContainer.menuOption)
     {
@@ -59,32 +60,50 @@ public class AccountManagement implements PropertyChangeListener
 
       case DELETE_ACCOUNT:
         phoneNumber = messageContainer.messageContents.get(0);
-        this.deleteServiceAccount(phoneNumber);
+        isSuccessful = this.deleteServiceAccount(phoneNumber);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully deleted service account!\n");
+          break;
+        }
+        returnMsg.append("Failed to delete service account: Account phone number not associated to a recognized account.\n");
         break;
 
       case UPDATE_ACCOUNT:
         phoneNumber = messageContainer.messageContents.get(0);
         bundleName = messageContainer.messageContents.get(1);
         bundle = new Bundle(bundleName);
-        this.updateServiceAccount(phoneNumber, bundle);
+        isSuccessful = this.updateServiceAccount(phoneNumber, bundle);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully updated service account!\n");
+          break;
+        }
+        returnMsg.append("Failed to update service account: Phone number does not correspond to known account.\n");
         break;
 
       default:
         System.out.println("Nothing to be done by AccountManager.\n");
         break;
     }
+    serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
   }
 
-  public void addServiceAccount(ServiceAccount account)
+  public boolean addServiceAccount(ServiceAccount account)
   {
     if (null == account)
     {
       throw new IllegalArgumentException("Service account invalid. Nothing added by Account Manager.\n");
     }
+    if (null != accounts.get(account.phoneNumber))
+    {
+      return false;
+    }
     accounts.put(account.phoneNumber, account);
+    return true;
   }
 
-  public void addServiceAccount(User user, String phoneNumber, Bundle bundle)
+  public boolean addServiceAccount(User user, String phoneNumber, Bundle bundle)
   {
     if (null == user || null == phoneNumber || null == bundle)
     {
@@ -93,26 +112,38 @@ public class AccountManagement implements PropertyChangeListener
 
     // create account
     ServiceAccount newAccount = new ServiceAccount(phoneNumber, user, bundle);
+    if (null != accounts.get(phoneNumber))
+    {
+      return false;
+    }
     accounts.put(phoneNumber, newAccount);
+    return true;
   }
 
-  ServiceAccount getServiceAccount(String phoneNumber)
+  public ServiceAccount getServiceAccount(String phoneNumber)
   {
     return accounts.get(phoneNumber);
   }
 
-  void updateServiceAccount(String phoneNumber, Bundle newBundle)
+  public boolean updateServiceAccount(String phoneNumber, Bundle newBundle)
   {
     ServiceAccount account = accounts.get(phoneNumber);
 
     if (account != null)
     {
       account.changeBundle(newBundle);
+      return true;
     }
+    return false;
   }
 
-  void deleteServiceAccount(String phoneNumber)
+  public boolean deleteServiceAccount(String phoneNumber)
   {
+    if (null == phoneNumber || null == accounts.get(phoneNumber))
+    {
+      return false;
+    }
     accounts.remove(phoneNumber);
+    return true;
   }
 }
