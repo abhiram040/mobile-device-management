@@ -77,6 +77,16 @@ class UI
     }
     return newMap;
   }
+  
+  public void displayResponse(MessageContainer messageContainer)
+  {
+    String messageResult = messageContainer.isSuccessful ? "SUCCESS" : "ERROR";
+    
+    System.out.println("\n==============================");
+    System.out.println("OPERATION: " + messageContainer.menuOption + " = " + messageResult);
+    System.out.println("Content: " + messageContainer.messageContents);
+    System.out.println("==============================");
+  }
 
   private Command buildCommand(MenuOption menuOption)
   {

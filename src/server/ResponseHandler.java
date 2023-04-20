@@ -44,6 +44,7 @@ public class ResponseHandler
   {
     MessageContainer messageContainer = serverMessageHandler.retrieveMessage();
 
+    // TODO: Debug, can be deleted later
     System.out.println("Message Option: " + messageContainer.menuOption);
     for (String messageContent : messageContainer.messageContents)
     {
@@ -52,7 +53,6 @@ public class ResponseHandler
     handleMessage(messageContainer);
   }
 
-  // rather than doing handling itself, now delegates work to each manager
   public void handleMessage(MessageContainer messageContainer)
   {
     System.out.println("Delegating work for task: " + messageContainer.menuOption + " to different managers.");

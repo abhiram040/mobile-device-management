@@ -22,6 +22,7 @@ CLASSES = \
 	ClientMessageHandler.java \
 	Command.java \
 	DeleteAccountCommand.java \
+	MessageContainer.java \
 	DeleteUserCommand.java \
 	DeleteUsersCommand.java \
 	ListAccountCommand.java \

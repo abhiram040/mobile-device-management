@@ -61,14 +61,12 @@ public class ServerMessageHandler
     int responseType = isSuccessful ? 1 : 0;
     String messageToClient = menuOption.ordinal() + "=" + responseType + ";" + message;
     
+    // TODO: Debug, can be deleted later
     System.out.println("messageToClient: " + messageToClient);
     
     sendMessage(messageToClient);
   }
-  
-  // TODO: The messages could be formatted better so the parsing is less error prone
-  // Doesn't handle blank entries or entires with ';' currently
-  // Likely fine for now, but this area could be improved later if we have time
+
   private MessageContainer parseClientMessage(String messageFromClient)
   {
     final int MINIMUM_MESSAGE_SIZE = 3;
