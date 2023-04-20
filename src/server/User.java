@@ -54,4 +54,9 @@ public class User
     }
     this.email = newEmail;
   }
+  
+  @Override
+  public String toString() {
+    return "User: " + this.fullName + " Addres: " + this.address + " Email: " + this.email;
+  }
 }
