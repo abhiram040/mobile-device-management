@@ -1,4 +1,4 @@
-import java.io.IOException;
+import java.util.List;
 
 public class Bundle
 {
@@ -7,10 +7,14 @@ public class Bundle
   public String messagingPlan;
   public String dataPlan;
   public double monthlyFees;
+  public static List<String> preConfiguredBundleNames;
+  public static List<String> pacBundleNames;
 
   // General Bundle constructor that takes bundle name and sets defaults for that bundle type
   public Bundle(String name)
   {
+    setPredConfiguredBundleNames();
+    setPacBundleNames();
     switch (name)
     {
       case "Platinum":
@@ -51,6 +55,17 @@ public class Bundle
       default:
         throw new IllegalArgumentException("Illegal Argument - Not a recognized bundle name.");
     }
+  }
+
+  private void setPredConfiguredBundleNames() {
+    preConfiguredBundleNames.add("Platinum");
+    preConfiguredBundleNames.add("Gold");
+    preConfiguredBundleNames.add("Silver");
+    preConfiguredBundleNames.add("Bronze");
+  }
+
+  private void setPacBundleNames() {
+
   }
 
   public void setPaCCallingOption(String optionName)

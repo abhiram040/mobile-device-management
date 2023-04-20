@@ -1,7 +1,7 @@
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 
 public class AccountManagement implements PropertyChangeListener
 {
@@ -9,6 +9,11 @@ public class AccountManagement implements PropertyChangeListener
   MessageContainer messageContainer;
 
   ServerMessageHandler serverMessageHandler;
+
+  public AccountManagement()
+  {
+
+  }
 
   public AccountManagement(ServerMessageHandler msgHandler)
   {
@@ -23,6 +28,7 @@ public class AccountManagement implements PropertyChangeListener
 
   public void performRequestedTask()
   {
+    StringBuilder returnMsg = new StringBuilder();
     // case wise handling of message passed down by server
     switch(messageContainer.menuOption)
     {

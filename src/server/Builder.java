@@ -1,12 +1,13 @@
-import java.util.List;
-import java.util.ArrayList;
-import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 public class Builder
 {
   private MessageContainer messageContainer;
   private PropertyChangeSupport support;
+  private AccountManagement accountManagement;
+  private BundleManagement bundleManagement;
+  private UserManagement userManagement;
 
   public Builder()
   {
@@ -29,9 +30,19 @@ public class Builder
     this.messageContainer = messageContainer;
   }
 
-  public void handleResponse(String message)
+  public void handleResponse(ServerMessageHandler serverMessageHandler)
   {
+    String message = serverMessageHandler.retrieveMessage();
     MessageContainer messageContainer = parseMessage(message);
+
+    if (this.accountManagement == null) {
+      this.accountManagement = new AccountManagement(serverMessageHandler);
+      this.bundleManagement = new BundleManagement(serverMessageHandler);
+      this.userManagement = new UserManagement(serverMessageHandler);
+      this.addPropertyChangeListener(accountManagement);
+      this.addPropertyChangeListener(bundleManagement);
+      this.addPropertyChangeListener(userManagement);
+    }
 
     System.out.println("Message Option: " + messageContainer.menuOption);
     for (String messageContent : messageContainer.messageContents)

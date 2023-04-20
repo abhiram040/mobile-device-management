@@ -9,9 +9,7 @@ public class MDMServer
 
   private static void serverLoop()
   {
-    String messageFromClient = serverMessageHandler.retrieveMessage();
-
-    builder.handleResponse(messageFromClient);
+    builder.handleResponse(serverMessageHandler);
 
     String messageToClient = "test";
     serverMessageHandler.sendMessage(messageToClient);

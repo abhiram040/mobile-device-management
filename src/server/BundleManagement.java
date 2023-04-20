@@ -1,6 +1,7 @@
-import java.util.*;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BundleManagement implements PropertyChangeListener
 {
@@ -8,6 +9,11 @@ public class BundleManagement implements PropertyChangeListener
   private MessageContainer messageContainer;
 
   ServerMessageHandler serverMessageHandler;
+
+  public BundleManagement()
+  {
+
+  }
 
   public BundleManagement(ServerMessageHandler msgHandler)
   {
@@ -22,31 +28,62 @@ public class BundleManagement implements PropertyChangeListener
 
   public void performRequestedTask()
   {
+    String bundleName;
+    String callingPlanName;
+    String messagingPlanName;
+    Bundle bundle;
+    StringBuilder returnMsg = new StringBuilder();
     // case wise handling of message passed down by server
     switch(messageContainer.menuOption)
     {
       case ADD_PRE_BUNDLE:
+        bundleName = messageContainer.messageContents.get(0);
+        bundle = new Bundle(bundleName);
+        this.addBundle(bundle);
+        serverMessageHandler.sendMessage("adding preconfig bundle!\n");
         break;
 
       case ADD_PAC_BUNDLE_V1:
+        bundleName = messageContainer.messageContents.get(0);
+        bundle = new Bundle(bundleName);
+        this.addBundle(bundle);
+        serverMessageHandler.sendMessage("adding PaC bundle!\n");
         break;
 
       case ADD_PAC_BUNDLE_V2:
+        callingPlanName = messageContainer.messageContents.get(0);
+        this.addPaCWithCalling(callingPlanName);
+        serverMessageHandler.sendMessage("adding PaC bundle with calling plan name!\n");
         break;
 
       case ADD_PAC_BUNDLE_V3:
-        break;
-
-      case LIST_MONTHLY_FEES:
-        break;
-
-      case LIST_MONTHLY_FEES_ALL:
+        messagingPlanName = messageContainer.messageContents.get(0);
+        this.addPaCWithMessaging(messagingPlanName);
+        serverMessageHandler.sendMessage("adding PaC bundle with messaging plan name!\n");
         break;
 
       case LIST_BUNDLE_DETAILS:
+        bundleName = messageContainer.messageContents.get(0);
+        bundle = this.getBundle(bundleName);
+        returnMsg = new StringBuilder();
+        returnMsg.append(bundle.name + " ");
+        returnMsg.append(bundle.callingPlan + " ");
+        returnMsg.append(bundle.messagingPlan + " ");
+        returnMsg.append(bundle.dataPlan + " ");
+        returnMsg.append(bundle.monthlyFees);
+        serverMessageHandler.sendMessage(returnMsg.toString());
         break;
 
       case LIST_ALL_PRE_BUNDLES:
+        bundleName = messageContainer.messageContents.get(0);
+        bundle = this.getBundle(bundleName);
+        returnMsg = new StringBuilder();
+        returnMsg.append(bundle.name + " ");
+        returnMsg.append(bundle.callingPlan + " ");
+        returnMsg.append(bundle.messagingPlan + " ");
+        returnMsg.append(bundle.dataPlan + " ");
+        returnMsg.append(bundle.monthlyFees);
+        serverMessageHandler.sendMessage(returnMsg.toString());
         break;
 
       case LIST_ALL_PAC_BUNDLES:
