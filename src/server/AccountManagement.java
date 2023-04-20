@@ -2,12 +2,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
 
 public class AccountManagement implements PropertyChangeListener
 {
   Map<String, ServiceAccount> accounts = new HashMap<>();
   MessageContainer messageContainer;
   ServerMessageHandler serverMessageHandler;
+  ArrayList<ServiceAccount> accountList = new ArrayList<ServiceAccount>();
+  ArrayList<ServiceAccount> displayAccountList = new ArrayList<ServiceAccount>();
 
   // this class is currently acting as the primary manager to avoid
   // any circular dependancies. Will likely look into replacing referencing
@@ -53,24 +56,23 @@ public class AccountManagement implements PropertyChangeListener
         bundle = new Bundle(bundleName);
         isSuccessful = this.addServiceAccount(user, phoneNumber, bundle);
         userManagement.addAssociatedAccountsNo(user);
-         if (isSuccessful)
+        if (isSuccessful)
         {
-          returnMsg.append("Successfully deleted service account!\n");
+          returnMsg.append("Successfully added service account!\n");
           break;
         }
-        returnMsg.append("Failed to delete service account: Account phone number not associated to a recognized account.\n");
+        returnMsg.append("Failed to add service account: Account phone number not associated to a recognized account.\n");
         break;
 
       case ADD_ACCOUNT_V2:
-        // Need to find a way to add an existing account from accound ID string
-        /*accountId = messageContainer.messageContents.get(0);
-        try {
-          account = Integer.parseInt(accountId);
+        account = this.getServiceAccount(messageContainer.messageContents.get(0));
+        isSuccessful = this.addServiceAccount(account);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully added service account!\n");
+          break;
         }
-        catch (NumberFormatException e) {
-          System.out.println("Account ID cannot be a non-integer value.\n");
-        }
-        this.addServiceAccount(account);*/
+        returnMsg.append("Failed to add service account: Account phone number not associated to a recognized account.\n");
         break;
 
       case DELETE_ACCOUNT:
@@ -98,15 +100,36 @@ public class AccountManagement implements PropertyChangeListener
         break;
 
       case LIST_ACCOUNT:
+        account = this.getServiceAccount(messageContainer.messageContents.get(0));
+        returnMsg.append("Account inforamtion for provided phone number is as below:");
+        returnMsg.append("User with name " + account.user.fullName + " with phone number:" + account.phoneNumber + " has subscribed for bundle:" + account.bundle.name);
+
         break;
 
       case LIST_ACCOUNTS:
+        user = userManagement.getUser(messageContainer.messageContents.get(0));
+        displayAccountList = getAssociatedAccountsList(user);
+        returnMsg.append("List of accounts associated with provided user name are listed below:");
+        for(ServiceAccount acc : displayAccountList)
+        {
+          returnMsg.append("User with name " + acc.user.fullName + " with phone number:" + acc.phoneNumber + " has subscribed for bundle:" + acc.bundle.name);
+        }
+
         break;
 
       case LIST_MONTHLY_FEES:
+        account = this.getServiceAccount(messageContainer.messageContents.get(0));
+        returnMsg.append("User with name " + account.user.fullName + "has monthly fees of " + account.bundle.monthlyFees + "CAD.");
+        
         break;
 
       case LIST_MONTHLY_FEES_ALL:
+        user = userManagement.getUser(messageContainer.messageContents.get(0));
+        displayAccountList = getAssociatedAccountsList(user);
+        for(ServiceAccount acc : displayAccountList)
+        {
+          returnMsg.append("User with name " + acc.user.fullName + "has total monthly fees of " + acc.bundle.monthlyFees + "CAD.");
+        }
         break;
 
       default:
@@ -172,5 +195,17 @@ public class AccountManagement implements PropertyChangeListener
     }
     accounts.remove(phoneNumber);
     return true;
+  }
+
+  public ArrayList<ServiceAccount> getAssociatedAccountsList(User user)
+  {
+    for (ServiceAccount account : this.accounts.values()) 
+    {
+      if (account.user.fullName == user.fullName)
+      {
+        accountList.add(account);
+      }
+    }
+    return accountList;
   }
 }
