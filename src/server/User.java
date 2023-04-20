@@ -4,7 +4,6 @@ public class User
   public String phoneNumber;
   public String address;
   public String email;
-  public int userId = 0;
   public int numOfAssociatedAccounts = 0;
 
   // unused constructor?
@@ -15,13 +14,12 @@ public class User
     this.email = email;
   }
 
-  public User(String fullName, String phoneNumber, String address, String email, int userId)
+  public User(String fullName, String phoneNumber, String address, String email)
   {
     this.fullName = fullName;
     this.phoneNumber = phoneNumber;
     this.address = address;
     this.email = email;
-    this.userId = userId;
   }
 
   public String getAddress()

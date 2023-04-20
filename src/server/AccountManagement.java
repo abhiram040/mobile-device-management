@@ -29,7 +29,6 @@ public class AccountManagement implements PropertyChangeListener
   public void performRequestedTask()
   {
     StringBuilder returnMsg = new StringBuilder();
-    String userId;
     String phoneNumber;
     String bundleName;
     String accountId;

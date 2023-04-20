@@ -39,14 +39,24 @@ public class UserManagement implements PropertyChangeListener
     {
       case ADD_USER:
         user = this.createUser(messageContainer.messageContents);
-        this.addUser(user);
-
+        isSuccessful = this.addUser(user);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully added user!\n");
+          break;
+        }
+        returnMsg.append("Failed to add user: User already exists or invalid data given.\n");
         break;
 
       case ADD_USERS:
         userList = this.createUserList(messageContainer.messageContents);
-        this.addUsers(userList);
-        
+        isSuccessful = this.addUsers(userList);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully added list of users!\n");
+          break;
+        }
+        returnMsg.append("Failed to add list of users. One of the users likely already exists.\n");
         break;
 
       case UPDATE_USER:
@@ -124,31 +134,30 @@ public class UserManagement implements PropertyChangeListener
     return userNameList;
   }
 
-  public void addUser(User user)
+  public boolean addUser(User user)
   {
-    if (this.users.containsKey(user.getName()))
+    if (users.containsKey(user.getName()))
     {
       System.out.println("Cannot add: " + user.getName() + " because they already exist in the system.\n");
-      //serverMessageHandler.sendMessage("Cannot add: " + user.getName() + " because they already exist in the system.\n");
-      return;
+      return false;
     }
     users.put(user.fullName, user);
     System.out.println("User" + user.getName() + " added to the list of users.\n");
-    //serverMessageHandler.sendMessage("User" + user.getName() + " added to the list of users.\n");
-    
-    //TODO: Centralize the response handling, use buildAndSendResponseMessage instead of sendMessage();
+    return true;    
   }
 
-  public void addUsers(List<User> userList)
+  public boolean addUsers(List<User> userList)
   {
     for (User user : userList)
     {
-      if (user.getUserId() == 0)
+      boolean success = addUser(user);
+      if (!success)
       {
-        user.setUserId(users.size() + 1);
+        System.out.println("Failed to add atleast one user. Returning false.");
+        return false;
       }
-      addUser(user);
     }
+    return true;
   }
 
   public User getUser(String fullName)
@@ -156,20 +165,27 @@ public class UserManagement implements PropertyChangeListener
     return users.get(fullName);
   }
 
-  public void updateUser(User user)
+  public boolean updateUser(User user)
   {
     User userUpdate = users.get(user.fullName);
     if (user != null)
     {
       userUpdate.address = user.address;
       userUpdate.email = user.email;
+      return true;
     }
+    return false;
   }
 
-  public void deleteUser(String fullName)
+  public boolean deleteUser(String fullName)
   {
+    if (null == users.get(fullName))
+    {
+      return false;
+    }
     System.out.println("WARNING: Removing user: " + fullName + " and all associated accounts.\n");
     users.remove(fullName);
+    return true;
   }
 
   public void deleteUsers(List<String> userNameList)
