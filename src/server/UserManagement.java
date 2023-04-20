@@ -35,9 +35,12 @@ public class UserManagement implements PropertyChangeListener
     List<User> userList = new ArrayList<>();
     StringBuilder returnMsg = new StringBuilder();
     // case wise handling of message passed down by server
+    List<String> inputs = messageContainer.messageContents;
+    int numCurrentUsers = this.users.size();
     switch(messageContainer.menuOption)
     {
       case ADD_USER:
+<<<<<<< HEAD
         user = this.createUser(messageContainer.messageContents);
         this.addUser(user);
         serverMessageHandler.sendMessage("Adding User!\n");
@@ -65,6 +68,58 @@ public class UserManagement implements PropertyChangeListener
         List<String> userNameList = this.createUserNameList(messageContainer.messageContents);
         this.deleteUsers(userNameList);
         serverMessageHandler.sendMessage("Deleting users!\n");
+=======
+        User user = new User(inputs.get(0) + inputs.get(1), inputs.get(2), inputs.get(3), inputs.get(4), numCurrentUsers + 1);
+        this.addUser(user);
+        break;
+
+      case ADD_USERS:
+        for (int i = 0; i < (inputs.size() % 5); i++)
+        {
+          numCurrentUsers = this.users.size();
+          this.addUser(new User(inputs.get(5*i) + inputs.get((5*i) + 1), inputs.get((5*i) + 2), inputs.get((5*i) + 3), inputs.get((5*i) + 4), numCurrentUsers + 1));
+        }
+        break;
+
+      case UPDATE_USER:
+        String userName = inputs.get(0);
+        // not sure how email and address is updated if only name is passed?
+        break;
+
+      case DELETE_USER:
+        this.deleteUser(inputs.get(0));
+        break;
+
+      case DELETE_USERS:
+        for (int i = 0; i < inputs.size(); i++)
+        {
+          this.deleteUser(inputs.get(i));
+        }
+        break;
+
+      case ADD_ACCOUNT_V1:
+        break;
+
+      case ADD_ACCOUNT_V2:
+        break;
+
+      case DELETE_ACCOUNT:
+        break;
+
+      case UPDATE_ACCOUNT:
+        break;
+
+      case ADD_PRE_BUNDLE:
+        break;
+
+      case ADD_PAC_BUNDLE_V1:
+        break;
+
+      case ADD_PAC_BUNDLE_V2:
+        break;
+
+      case ADD_PAC_BUNDLE_V3:
+>>>>>>> 4d44da0 (Back end user management handling)
         break;
 
       case LIST_USER_DETAILS:
@@ -125,10 +180,12 @@ public class UserManagement implements PropertyChangeListener
     if (this.users.containsKey(user.getName()))
     {
       System.out.println("Cannot add: " + user.getName() + " because they already exist in the system.\n");
+      serverMessageHandler.sendMessage("Cannot add: " + user.getName() + " because they already exist in the system.\n");
       return;
     }
     users.put(user.fullName, user);
-    System.out.println("users: " + users);
+    System.out.println("User" + user.getName() + " added to the list of users.\n");
+    serverMessageHandler.sendMessage("User" + user.getName() + " added to the list of users.\n");
   }
 
   public void addUsers(List<User> userList)
