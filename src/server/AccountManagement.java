@@ -60,7 +60,6 @@ public class AccountManagement implements PropertyChangeListener
       case DELETE_ACCOUNT:
         phoneNumber = messageContainer.messageContents.get(0);
         this.deleteServiceAccount(phoneNumber);
-        serverMessageHandler.sendMessage("Deleted Service Account!\n");
         break;
 
       case UPDATE_ACCOUNT:
@@ -68,7 +67,6 @@ public class AccountManagement implements PropertyChangeListener
         bundleName = messageContainer.messageContents.get(1);
         bundle = new Bundle(bundleName);
         this.updateServiceAccount(phoneNumber, bundle);
-        serverMessageHandler.sendMessage("Updated Service Account!\n");
         break;
 
       default:
