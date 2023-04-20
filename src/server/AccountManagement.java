@@ -7,7 +7,7 @@ public class AccountManagement implements PropertyChangeListener
 {
   Map<String, ServiceAccount> accounts = new HashMap<>();
   MessageContainer messageContainer;
-
+  UserManagement userManagement;
   ServerMessageHandler serverMessageHandler;
 
   public AccountManagement()
@@ -29,6 +29,7 @@ public class AccountManagement implements PropertyChangeListener
   public void performRequestedTask()
   {
     StringBuilder returnMsg = new StringBuilder();
+    String fullName;
     String phoneNumber;
     String bundleName;
     String accountId;
@@ -40,21 +41,31 @@ public class AccountManagement implements PropertyChangeListener
     switch(messageContainer.menuOption)
     {
       case ADD_ACCOUNT_V1:
-        // Needs fixes for the userID part
-        /*userId = messageContainer.messageContents.get(1);
-        user = new User(userId);
         phoneNumber = messageContainer.messageContents.get(0);
+        fullName = messageContainer.messageContents.get(1);
+        user = userManagement.getUser(fullName);
         bundleName = messageContainer.messageContents.get(2);
         bundle = new Bundle(bundleName);
-        this.addServiceAccount(user, phoneNumber, bundle);
-        serverMessageHandler.sendMessage("Added Service Account!\n");*/
+        isSuccessful = this.addServiceAccount(user, phoneNumber, bundle);
+        userManagement.addAssociatedAccountsNo(user);
+         if (isSuccessful)
+        {
+          returnMsg.append("Successfully deleted service account!\n");
+          break;
+        }
+        returnMsg.append("Failed to delete service account: Account phone number not associated to a recognized account.\n");
         break;
 
       case ADD_ACCOUNT_V2:
         // Need to find a way to add an existing account from accound ID string
         /*accountId = messageContainer.messageContents.get(0);
-        this.addServiceAccount(account);
-        serverMessageHandler.sendMessage("Added Service Account!\n");*/
+        try {
+          account = Integer.parseInt(accountId);
+        }
+        catch (NumberFormatException e) {
+          System.out.println("Account ID cannot be a non-integer value.\n");
+        }
+        this.addServiceAccount(account);*/
         break;
 
       case DELETE_ACCOUNT:

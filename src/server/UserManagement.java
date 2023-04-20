@@ -195,4 +195,13 @@ public class UserManagement implements PropertyChangeListener
       deleteUser(userName);
     }
   }
+
+  public void addAssociatedAccountsNo(User user) 
+  {
+    User userNumOfAssociatedAccounts = users.get(user.fullName);
+    if (user != null)
+    {
+      userNumOfAssociatedAccounts.numOfAssociatedAccounts += 1;
+    }
+  }
 }
