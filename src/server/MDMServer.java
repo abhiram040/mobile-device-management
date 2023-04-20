@@ -10,10 +10,6 @@ public class MDMServer
   private static void serverLoop()
   {
     responseHandler.handleResponse();
-
-    String messageToClient = "test";
-    serverMessageHandler.sendMessage(messageToClient);
-    System.out.println("messageToClient: " + messageToClient);
   }
 
   public static void main(String[] args) 

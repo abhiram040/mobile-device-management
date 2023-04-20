@@ -13,13 +13,13 @@ public class ResponseHandler
   public ResponseHandler(ServerMessageHandler serverMessageHandler)
   {
     this.support = new PropertyChangeSupport(this);
-	this.serverMessageHandler = serverMessageHandler;
+    this.serverMessageHandler = serverMessageHandler;
 	
-	this.accountManagement = new AccountManagement(serverMessageHandler);
+    this.accountManagement = new AccountManagement(serverMessageHandler);
     this.bundleManagement = new BundleManagement(serverMessageHandler);
     this.userManagement = new UserManagement(serverMessageHandler);
     
-	this.addPropertyChangeListener(accountManagement);
+    this.addPropertyChangeListener(accountManagement);
     this.addPropertyChangeListener(bundleManagement);
     this.addPropertyChangeListener(userManagement);
   }

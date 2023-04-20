@@ -29,7 +29,7 @@ public class ServerMessageHandler
     }
   }
 
-  public void sendMessage(String messageToClient)
+  private void sendMessage(String messageToClient)
   {
     try
     {
@@ -47,7 +47,7 @@ public class ServerMessageHandler
     try
     {
       String messageFromClient = (String) ois.readObject();
-	  messageContainer = parseMessage(messageFromClient);
+      messageContainer = parseClientMessage(messageFromClient);
     }
     catch(Exception e)
     {
@@ -56,10 +56,20 @@ public class ServerMessageHandler
     return messageContainer;
   }
   
+  public void buildAndSendResponseMessage(MenuOption menuOption, boolean isSuccessful, String message)
+  {
+    int responseType = isSuccessful ? 1 : 0;
+    String messageToClient = menuOption.ordinal() + "=" + responseType + ";" + message;
+    
+    System.out.println("messageToClient: " + messageToClient);
+    
+    sendMessage(messageToClient);
+  }
+  
   // TODO: The messages could be formatted better so the parsing is less error prone
   // Doesn't handle blank entries or entires with ';' currently
   // Likely fine for now, but this area could be improved later if we have time
-  private MessageContainer parseMessage(String messageFromClient)
+  private MessageContainer parseClientMessage(String messageFromClient)
   {
     final int MINIMUM_MESSAGE_SIZE = 3;
 

@@ -34,43 +34,50 @@ public class UserManagement implements PropertyChangeListener
     User user;
     List<User> userList = new ArrayList<>();
     StringBuilder returnMsg = new StringBuilder();
+    boolean isSuccessful = false;
     switch(messageContainer.menuOption)
     {
       case ADD_USER:
         user = this.createUser(messageContainer.messageContents);
         this.addUser(user);
-        serverMessageHandler.sendMessage("Adding User!\n");
+
+        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case ADD_USERS:
         userList = this.createUserList(messageContainer.messageContents);
         this.addUsers(userList);
-        serverMessageHandler.sendMessage("Adding Users!\n");
+        
+        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case UPDATE_USER:
         user = this.createUser(messageContainer.messageContents);
         this.updateUser(user);
-        serverMessageHandler.sendMessage("Updating user!\n");
+
+        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case DELETE_USER:
         String userName = messageContainer.messageContents.get(0);
         this.deleteUser(userName);
-        serverMessageHandler.sendMessage("Deleting user!\n");
+
+        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case DELETE_USERS:
         List<String> userNameList = this.createUserNameList(messageContainer.messageContents);
         this.deleteUsers(userNameList);
-        serverMessageHandler.sendMessage("Deleting users!\n");
+        
+        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case LIST_USER_DETAILS:
         user = this.getUser(messageContainer.messageContents.get(0));
         returnMsg = new StringBuilder();
         returnMsg.append(user.fullName + " " + user.address + " " + user.email);
-        serverMessageHandler.sendMessage(returnMsg.toString());
+
+        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case LIST_ALL_USERS:
@@ -78,7 +85,8 @@ public class UserManagement implements PropertyChangeListener
         for (String eachUserName : this.users.keySet()) {
           returnMsg.append(eachUserName + " ");
         }
-        serverMessageHandler.sendMessage(returnMsg.toString());
+
+        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       default:
@@ -124,12 +132,14 @@ public class UserManagement implements PropertyChangeListener
     if (this.users.containsKey(user.getName()))
     {
       System.out.println("Cannot add: " + user.getName() + " because they already exist in the system.\n");
-      serverMessageHandler.sendMessage("Cannot add: " + user.getName() + " because they already exist in the system.\n");
+      //serverMessageHandler.sendMessage("Cannot add: " + user.getName() + " because they already exist in the system.\n");
       return;
     }
     users.put(user.fullName, user);
     System.out.println("User" + user.getName() + " added to the list of users.\n");
-    serverMessageHandler.sendMessage("User" + user.getName() + " added to the list of users.\n");
+    //serverMessageHandler.sendMessage("User" + user.getName() + " added to the list of users.\n");
+    
+    //TODO: Centralize the response handling, use buildAndSendResponseMessage instead of sendMessage();
   }
 
   public void addUsers(List<User> userList)
