@@ -97,6 +97,18 @@ public class AccountManagement implements PropertyChangeListener
         returnMsg.append("Failed to update service account: Phone number does not correspond to known account.\n");
         break;
 
+      case LIST_ACCOUNT:
+        break;
+
+      case LIST_ACCOUNTS:
+        break;
+
+      case LIST_MONTHLY_FEES:
+        break;
+
+      case LIST_MONTHLY_FEES_ALL:
+        break;
+
       default:
         System.out.println("Nothing to be done by AccountManager.\n");
         break;
