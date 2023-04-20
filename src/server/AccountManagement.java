@@ -29,58 +29,46 @@ public class AccountManagement implements PropertyChangeListener
   public void performRequestedTask()
   {
     StringBuilder returnMsg = new StringBuilder();
+    String userId;
+    String phoneNumber;
+    String bundleName;
+    String accountId;
+    User user;
+    Bundle bundle;
+    ServiceAccount account;
     // case wise handling of message passed down by server
     switch(messageContainer.menuOption)
     {
       case ADD_ACCOUNT_V1:
+        // Needs fixes for the userID part
+        /*userId = messageContainer.messageContents.get(1);
+        user = new User(userId);
+        phoneNumber = messageContainer.messageContents.get(0);
+        bundleName = messageContainer.messageContents.get(2);
+        bundle = new Bundle(bundleName);
+        this.addServiceAccount(user, phoneNumber, bundle);
+        serverMessageHandler.sendMessage("Added Service Account!\n");*/
         break;
 
       case ADD_ACCOUNT_V2:
+        // Need to find a way to add an existing account from accound ID string
+        /*accountId = messageContainer.messageContents.get(0);
+        this.addServiceAccount(account);
+        serverMessageHandler.sendMessage("Added Service Account!\n");*/
         break;
 
       case DELETE_ACCOUNT:
+        phoneNumber = messageContainer.messageContents.get(0);
+        this.deleteServiceAccount(phoneNumber);
+        serverMessageHandler.sendMessage("Deleted Service Account!\n");
         break;
 
       case UPDATE_ACCOUNT:
-        break;
-
-      case ADD_PRE_BUNDLE:
-        break;
-
-      case ADD_PAC_BUNDLE_V1:
-        break;
-
-      case ADD_PAC_BUNDLE_V2:
-        break;
-
-      case ADD_PAC_BUNDLE_V3:
-        break;
-
-      case LIST_USER_DETAILS:
-        break;
-
-      case LIST_ALL_USERS:
-        break;
-
-      case LIST_ACCOUNT:
-        break;
-
-      case LIST_ACCOUNTS:
-        break;
-
-      case LIST_MONTHLY_FEES:
-        break;
-
-      case LIST_MONTHLY_FEES_ALL:
-        break;
-
-      case LIST_BUNDLE_DETAILS:
-        break;
-
-      case LIST_ALL_PRE_BUNDLES:
-        break;
-
-      case LIST_ALL_PAC_BUNDLES:
+        phoneNumber = messageContainer.messageContents.get(0);
+        bundleName = messageContainer.messageContents.get(1);
+        bundle = new Bundle(bundleName);
+        this.updateServiceAccount(phoneNumber, bundle);
+        serverMessageHandler.sendMessage("Updated Service Account!\n");
         break;
 
       default:
