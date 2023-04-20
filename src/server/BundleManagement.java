@@ -41,30 +41,22 @@ public class BundleManagement implements PropertyChangeListener
         bundleName = messageContainer.messageContents.get(0);
         bundle = new Bundle(bundleName);
         this.addBundle(bundle);
-        
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case ADD_PAC_BUNDLE_V1:
         bundleName = messageContainer.messageContents.get(0);
         bundle = new Bundle(bundleName);
         this.addBundle(bundle);
-        
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case ADD_PAC_BUNDLE_V2:
         callingPlanName = messageContainer.messageContents.get(0);
         this.addPaCWithCalling(callingPlanName);
-        
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case ADD_PAC_BUNDLE_V3:
         messagingPlanName = messageContainer.messageContents.get(0);
         this.addPaCWithMessaging(messagingPlanName);
-        
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case LIST_BUNDLE_DETAILS:
@@ -76,8 +68,6 @@ public class BundleManagement implements PropertyChangeListener
         returnMsg.append(bundle.messagingPlan + " ");
         returnMsg.append(bundle.dataPlan + " ");
         returnMsg.append(bundle.monthlyFees);
-        
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case LIST_ALL_PRE_BUNDLES:
@@ -88,8 +78,6 @@ public class BundleManagement implements PropertyChangeListener
           {
             returnMsg.append(bundle.name + " ");
             returnMsg.append(bundle.monthlyFees);
-        
-            serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
           }
         }
         break;
@@ -101,9 +89,7 @@ public class BundleManagement implements PropertyChangeListener
           if (isPaCBundle(bundle))
           {
             returnMsg.append(bundle.name + " with " + bundle.callingPlan + " calling, " + bundle.messagingPlan + " messaging, " + bundle.dataPlan + " data");
-            returnMsg.append(bundle.monthlyFees);
-        
-            serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
+            returnMsg.append(bundle.monthlyFees);       
           }
         }
         break;
@@ -112,6 +98,9 @@ public class BundleManagement implements PropertyChangeListener
         System.out.println("Nothing to be done by Bundle Manager.\n");
         break;
     }
+    // TODO: I'd suggest designing the code so this is the only message call.
+    // ie. Return the output of a task to performRequestedTask and then send it here.
+    serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
   }
 
   // should be able to handle both preconfig and PaC bundle types

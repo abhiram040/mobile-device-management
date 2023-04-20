@@ -41,35 +41,30 @@ public class UserManagement implements PropertyChangeListener
         user = this.createUser(messageContainer.messageContents);
         this.addUser(user);
 
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case ADD_USERS:
         userList = this.createUserList(messageContainer.messageContents);
         this.addUsers(userList);
         
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case UPDATE_USER:
         user = this.createUser(messageContainer.messageContents);
         this.updateUser(user);
 
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case DELETE_USER:
         String userName = messageContainer.messageContents.get(0);
         this.deleteUser(userName);
 
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case DELETE_USERS:
         List<String> userNameList = this.createUserNameList(messageContainer.messageContents);
         this.deleteUsers(userNameList);
         
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case LIST_USER_DETAILS:
@@ -77,7 +72,6 @@ public class UserManagement implements PropertyChangeListener
         returnMsg = new StringBuilder();
         returnMsg.append(user.fullName + " " + user.address + " " + user.email);
 
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       case LIST_ALL_USERS:
@@ -86,13 +80,16 @@ public class UserManagement implements PropertyChangeListener
           returnMsg.append(eachUserName + " ");
         }
 
-        serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
         break;
 
       default:
         System.out.println("Nothing to be done by User Manager.\n");
         break;
+      
     }
+    // TODO: I'd suggest designing the code so this is the only message call.
+    // ie. Return the output of a task to performRequestedTask and then send it here.
+    serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
   }
 
   public User createUser(List<String> messageContents) {
