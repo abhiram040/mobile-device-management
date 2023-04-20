@@ -1,7 +1,7 @@
 public class MDMServer
 {
   private static ServerMessageHandler serverMessageHandler;
-  private static Builder builder;
+  private static ResponseHandler responseHandler;
 
   private static UserManagement userManagement;
   private static BundleManagement bundleManagement;
@@ -9,7 +9,7 @@ public class MDMServer
 
   private static void serverLoop()
   {
-    builder.handleResponse(serverMessageHandler);
+    responseHandler.handleResponse();
 
     String messageToClient = "test";
     serverMessageHandler.sendMessage(messageToClient);
@@ -19,15 +19,15 @@ public class MDMServer
   public static void main(String[] args) 
   {
     serverMessageHandler = new ServerMessageHandler();
-    builder = new Builder();
+    responseHandler = new ResponseHandler(serverMessageHandler);
 
     userManagement = new UserManagement(serverMessageHandler);
     bundleManagement = new BundleManagement(serverMessageHandler);
     accountManagement = new AccountManagement(serverMessageHandler);
 
-    builder.addPropertyChangeListener(userManagement);
-    builder.addPropertyChangeListener(bundleManagement);
-    builder.addPropertyChangeListener(accountManagement);
+    responseHandler.addPropertyChangeListener(userManagement);
+    responseHandler.addPropertyChangeListener(bundleManagement);
+    responseHandler.addPropertyChangeListener(accountManagement);
 
     while (true)
     {
