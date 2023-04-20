@@ -64,4 +64,9 @@ public class User
   {
     return this.userId;
   }
+
+  @Override
+  public String toString() {
+    return "User: " + this.fullName + " Addres: " + this.address + " Email: " + this.email;
+  }
 }

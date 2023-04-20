@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -20,6 +19,7 @@ public class ServerMessageHandler
 
       System.out.println("Waiting for client to connect...");
       socket = server.accept();
+      System.out.println("One client is connected! Waiting for messages...");
       oos = new ObjectOutputStream(socket.getOutputStream());
       ois = new ObjectInputStream(socket.getInputStream());
     }

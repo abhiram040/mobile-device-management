@@ -126,6 +126,7 @@ public class UserManagement implements PropertyChangeListener
   }
 
   public List<String> createUserNameList(List<String> messageContents) {
+    //serverMessageHandler.sendMessage("User" + user.getName() + " added to the list of users.\n");
     List<String> userNameList = new ArrayList<>();
     for (String userName: messageContents) {
       userNameList.add(userName);
@@ -142,8 +143,9 @@ public class UserManagement implements PropertyChangeListener
       return false;
     }
     users.put(user.fullName, user);
-    System.out.println("User" + user.getName() + " added to the list of users.\n");
-    return true;    
+    System.out.println("User: " + user.getName() + " added to the list of users.\n");
+    System.out.println("User details: " + user.toString() + "\n");
+    //TODO: Centralize the response handling, use buildAndSendResponseMessage instead of sendMessage();
   }
 
   public boolean addUsers(List<User> userList)
