@@ -40,23 +40,47 @@ public class BundleManagement implements PropertyChangeListener
       case ADD_PRE_BUNDLE:
         bundleName = messageContainer.messageContents.get(0);
         bundle = new Bundle(bundleName);
-        this.addBundle(bundle);
+        isSuccessful = this.addBundle(bundle);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully added bundle to available bundle types!\n");
+          break;
+        }
+        returnMsg.append("Failed to add bundle. Bundle either already exists or is not an offered preconfig bundle.\n");
         break;
 
       case ADD_PAC_BUNDLE_V1:
         bundleName = messageContainer.messageContents.get(0);
         bundle = new Bundle(bundleName);
-        this.addBundle(bundle);
+        isSuccessful = this.addBundle(bundle);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully added PaC bundle!\n");
+          break;
+        }
+        returnMsg.append("Failed to add bundle. Bundle likely already exists in available bundles.\n");
         break;
 
       case ADD_PAC_BUNDLE_V2:
         callingPlanName = messageContainer.messageContents.get(0);
-        this.addPaCWithCalling(callingPlanName);
+        isSuccessful = this.addPaCWithCalling(callingPlanName);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully added PaC bundle with calling!\n");
+          break;
+        }
+        returnMsg.append("Failed to add bundle. Bundle likely already exists in available bundles.\n");
         break;
 
       case ADD_PAC_BUNDLE_V3:
         messagingPlanName = messageContainer.messageContents.get(0);
-        this.addPaCWithMessaging(messagingPlanName);
+        isSuccessful = this.addPaCWithMessaging(messagingPlanName);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully added PaC bundle with messaging!\n");
+          break;
+        }
+        returnMsg.append("Failed to add bundle. Bundle likely already exists in available bundles\n");
         break;
 
       case LIST_BUNDLE_DETAILS:
@@ -104,23 +128,42 @@ public class BundleManagement implements PropertyChangeListener
   }
 
   // should be able to handle both preconfig and PaC bundle types
-  public void addBundle(Bundle bundle)
+  public boolean addBundle(Bundle bundle)
   {
+    if (bundle.isPaCBundle() == false && bundles.containsKey(bundle.name))
+    {
+      System.out.println("This type of bundle already exists in offered bundle types. Nothing done.\n");
+      return false;
+    }
+    if (bundle.isPaCBundle() == true)
+    {
+      for (String bundleKeys : bundles.keySet())
+      {
+        if (bundles.get(bundleKeys).equals(bundle))
+        {
+          System.out.println("This type of bundle already exists in offered bundle types. Nothing done.\n");
+          return false;
+        }
+      }
+    }
     bundles.put(bundle.name, bundle);
+    return true;
   }
 
-  public void addPaCWithCalling(String callingPlan)
+  public boolean addPaCWithCalling(String callingPlan)
   {
     Bundle newBundle = new Bundle("Pick and Choose");
     newBundle.setPaCCallingOption(callingPlan);
-    this.addBundle(newBundle);
+    boolean success = this.addBundle(newBundle);
+    return success;
   }
 
-  public void addPaCWithMessaging(String messagingPlan)
+  public boolean addPaCWithMessaging(String messagingPlan)
   {
     Bundle newBundle = new Bundle("Pick and Choose");
     newBundle.setPaCMessagingOption(messagingPlan);
-    this.addBundle(newBundle);
+    boolean success = this.addBundle(newBundle);
+    return success;
   }
 
   public Bundle getBundle(String name)

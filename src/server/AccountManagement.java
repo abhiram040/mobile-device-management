@@ -7,8 +7,13 @@ public class AccountManagement implements PropertyChangeListener
 {
   Map<String, ServiceAccount> accounts = new HashMap<>();
   MessageContainer messageContainer;
-  UserManagement userManagement;
   ServerMessageHandler serverMessageHandler;
+
+  // this class is currently acting as the primary manager to avoid
+  // any circular dependancies. Will likely look into replacing referencing
+  // with a communication interface
+  UserManagement userManagement;
+  BundleManagement bundleManagement;
 
   public AccountManagement()
   {

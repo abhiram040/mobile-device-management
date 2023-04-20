@@ -54,19 +54,4 @@ public class User
     }
     this.email = newEmail;
   }
-
-  public void setUserId(int id)
-  {
-    this.userId = id;
-  }
-
-  public int getUserId()
-  {
-    return this.userId;
-  }
-
-  @Override
-  public String toString() {
-    return "User: " + this.fullName + " Addres: " + this.address + " Email: " + this.email;
-  }
 }

@@ -144,8 +144,7 @@ public class UserManagement implements PropertyChangeListener
     }
     users.put(user.fullName, user);
     System.out.println("User: " + user.getName() + " added to the list of users.\n");
-    System.out.println("User details: " + user.toString() + "\n");
-    //TODO: Centralize the response handling, use buildAndSendResponseMessage instead of sendMessage();
+    return true;
   }
 
   public boolean addUsers(List<User> userList)
