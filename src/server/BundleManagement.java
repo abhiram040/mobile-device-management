@@ -75,18 +75,29 @@ public class BundleManagement implements PropertyChangeListener
         break;
 
       case LIST_ALL_PRE_BUNDLES:
-        bundleName = messageContainer.messageContents.get(0);
-        bundle = this.getBundle(bundleName);
-        returnMsg = new StringBuilder();
-        returnMsg.append(bundle.name + " ");
-        returnMsg.append(bundle.callingPlan + " ");
-        returnMsg.append(bundle.messagingPlan + " ");
-        returnMsg.append(bundle.dataPlan + " ");
-        returnMsg.append(bundle.monthlyFees);
-        serverMessageHandler.sendMessage(returnMsg.toString());
+        for (Map.Entry<String, Bundle> entry : bundles.entrySet())
+        {
+          bundle = entry.getValue();
+          if (!isPaCBundle(bundle))
+          {
+            returnMsg.append(bundle.name + " ");
+            returnMsg.append(bundle.monthlyFees);
+            serverMessageHandler.sendMessage(returnMsg.toString());
+          }
+        }
         break;
 
       case LIST_ALL_PAC_BUNDLES:
+        for (Map.Entry<String, Bundle> entry : bundles.entrySet())
+        {
+          bundle = entry.getValue();
+          if (isPaCBundle(bundle))
+          {
+            returnMsg.append(bundle.name + " with " + bundle.callingPlan + " calling, " + bundle.messagingPlan + " messaging, " + bundle.dataPlan + " data");
+            returnMsg.append(bundle.monthlyFees);
+            serverMessageHandler.sendMessage(returnMsg.toString());
+          }
+        }
         break;
 
       default:
@@ -115,8 +126,13 @@ public class BundleManagement implements PropertyChangeListener
     this.addBundle(newBundle);
   }
 
-  Bundle getBundle(String name)
+  public Bundle getBundle(String name)
   {
     return bundles.get(name);
+  }
+
+  public boolean isPaCBundle(Bundle bundle)
+  {
+    return bundle.isPaCBundle();
   }
 }
