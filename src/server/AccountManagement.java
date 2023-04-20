@@ -15,8 +15,8 @@ public class AccountManagement implements PropertyChangeListener
   // this class is currently acting as the primary manager to avoid
   // any circular dependancies. Will likely look into replacing referencing
   // with a communication interface
-  UserManagement userManagement;
-  BundleManagement bundleManagement;
+  UserManagement userManagement = new UserManagement();
+  BundleManagement bundleManagement = new BundleManagement();
 
   public AccountManagement()
   {
