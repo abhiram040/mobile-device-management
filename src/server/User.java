@@ -54,14 +54,4 @@ public class User
     }
     this.email = newEmail;
   }
-
-  public void setUserId(int id)
-  {
-    this.userId = id;
-  }
-
-  public int getUserId()
-  {
-    return this.userId;
-  }
 }
