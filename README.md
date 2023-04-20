@@ -24,7 +24,7 @@ make run
 
 cd src/server
 
-rm -rf *.class
+rm -rf *.class (Linux) OR del *.class (Windows)
 
 javac MDMServer.java
 
@@ -48,7 +48,7 @@ make run
 
 cd src/client
 
-rm -rf *.class
+rm -rf *.class (Linux) OR del *.class (Windows)
 
 javac MDMClient.java
 
