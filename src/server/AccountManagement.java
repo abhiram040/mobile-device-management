@@ -101,9 +101,13 @@ public class AccountManagement implements PropertyChangeListener
 
       case LIST_ACCOUNT:
         account = this.getServiceAccount(messageContainer.messageContents.get(0));
-        returnMsg.append("Account inforamtion for provided phone number is as below:");
-        returnMsg.append("User with name " + account.user.fullName + " with phone number:" + account.phoneNumber + " has subscribed for bundle:" + account.bundle.name);
-
+        if (null != account)
+        {
+          returnMsg.append("Account inforamtion for provided phone number is as below:");
+          returnMsg.append("User with name " + account.user.fullName + " with phone number:" + account.phoneNumber + " has subscribed for bundle:" + account.bundle.name);
+          break;
+        }
+        returnMsg.append("Cannot list an invalid accounts information.\n");
         break;
 
       case LIST_ACCOUNTS:
@@ -112,19 +116,30 @@ public class AccountManagement implements PropertyChangeListener
         returnMsg.append("List of accounts associated with provided user name are listed below:");
         for(ServiceAccount acc : displayAccountList)
         {
-          returnMsg.append("User with name " + acc.user.fullName + " with phone number:" + acc.phoneNumber + " has subscribed for bundle:" + acc.bundle.name);
+          returnMsg.append("User with name: " + acc.user.fullName + " with phone number: " + acc.phoneNumber + " has subscribed for bundle: " + acc.bundle.name);
         }
 
         break;
 
       case LIST_MONTHLY_FEES:
         account = this.getServiceAccount(messageContainer.messageContents.get(0));
-        returnMsg.append("User with name " + account.user.fullName + "has monthly fees of " + account.bundle.monthlyFees + "CAD.");
-        
+        if (null != account)
+        {
+          isSuccessful = true;
+          returnMsg.append("User with name " + account.user.fullName + "has monthly fees of " + account.bundle.monthlyFees + "CAD.");
+          break;
+        }
+        isSuccessful = false;
+        returnMsg.append("User with name " + account.user.fullName + " cannot be found.\n");
         break;
 
       case LIST_MONTHLY_FEES_ALL:
         user = userManagement.getUser(messageContainer.messageContents.get(0));
+        if (null == user)
+        {
+          returnMsg.append("User does not exist in the system. Cannot pull monthly fees.\n");
+          break;
+        }
         displayAccountList = getAssociatedAccountsList(user);
         for(ServiceAccount acc : displayAccountList)
         {
@@ -172,6 +187,11 @@ public class AccountManagement implements PropertyChangeListener
 
   public ServiceAccount getServiceAccount(String phoneNumber)
   {
+    if (!accounts.containsKey(phoneNumber))
+    {
+      System.out.println("Cannot find account with that phone number.\n");
+      return null;
+    }
     return accounts.get(phoneNumber);
   }
 
