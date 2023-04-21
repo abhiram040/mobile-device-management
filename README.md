@@ -1,7 +1,5 @@
 # mobile-device-management
 
-The server must be running before the client.
-
 ## Dependencies
 
 java sdk, make, git

@@ -12,6 +12,7 @@ import java.util.Arrays;
 public class ClientMessageHandler
 {
   private final int port = 1234;
+  private final int RETRY_TIME = 10; // 10 seconds
   private Socket socket;
   private ObjectOutputStream oos;
   private ObjectInputStream ois;
@@ -22,17 +23,38 @@ public class ClientMessageHandler
    */
   public ClientMessageHandler()
   {
+    boolean isSuccessful = false;
+    while (!isSuccessful)
+    {
+      isSuccessful = attemptToConnect();
+    }
+    
+  }
+  
+  public boolean attemptToConnect()
+  {
+    boolean isSuccessful = false;
     try
     {
       InetAddress host = InetAddress.getLocalHost();
       socket = new Socket(host.getHostName(), port);
       oos = new ObjectOutputStream(socket.getOutputStream());
       ois = new ObjectInputStream(socket.getInputStream());
+      isSuccessful = true;
     }
     catch(Exception e)
     {
-      System.out.println("Error occurred creating the socket");
+      System.out.println("Server is down. Retrying in "+ RETRY_TIME + " seconds");
+      try
+      {
+        Thread.sleep(RETRY_TIME*1000);
+      }
+      catch(Exception sleepErr)
+      {
+        System.out.println("Sleep was interrupted");
+      }
     }
+    return isSuccessful;
   }
 
   /*
