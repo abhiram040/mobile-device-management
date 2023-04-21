@@ -59,7 +59,7 @@ java MDMClient
 - Simple Factory (Refer to the CommandFactory.java)
 - Singleton (Refer to the CommandFactory.java)
 
-### Team Members
+## Team Members
 
 - Abhiram Kothapalli
 - Akira Aida
