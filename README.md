@@ -5,7 +5,9 @@ The mobile device management project is broken down into two separate executable
 
 ## Dependencies
 
-java sdk, git, make (optional)
+- java sdk
+- git
+- make (optional)
 
 ## Server
 
