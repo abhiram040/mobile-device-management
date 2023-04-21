@@ -6,7 +6,6 @@ import java.util.TreeMap;
  */
 class UI
 {
-  private CommandFactory commandFactory;
   private Map<MenuOption, Command> uiMap;
   
   /*
@@ -14,7 +13,6 @@ class UI
    */
   public UI()
   {
-    commandFactory = new CommandFactory();
     uiMap = createMap();
   }
 
@@ -71,7 +69,7 @@ class UI
     Map<MenuOption, Command> newMap = new TreeMap<MenuOption, Command>();
     for (MenuOption menuOption : MenuOption.values())
     {
-      Command newCommand = commandFactory.createCommand(menuOption);
+      Command newCommand = CommandFactory.getInstance().createCommand(menuOption);
       newMap.put(menuOption, newCommand);
     }
     return newMap;

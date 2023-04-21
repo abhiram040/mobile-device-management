@@ -6,6 +6,24 @@ import java.util.Arrays;
  */
 public class CommandFactory
 {  
+  private static final CommandFactory instance = new CommandFactory();
+
+  /*
+   * @brief Default constructor is hidden
+   */
+  private CommandFactory()
+  {
+  }
+
+  /*
+   * @brief Grab the singleton instance of the CommandFactory
+   * @return The singleton instance of the CommandFactory
+   */
+  public static CommandFactory getInstance()
+  {
+    return instance;
+  }
+  
   /*
    * @brief Creates the related command to the inputted MenuOption
    * @param The MenuOption ENUM for the related Command that needs to be built
