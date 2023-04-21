@@ -92,7 +92,7 @@ public class ServerMessageHandler
   /*
    * @brief Parses the message from the client into a usable format
    * @param messageFromClient The message in a packed format
-   * @return The message is a usable format
+   * @return The message in a usable format
    */
   private MessageContainer parseClientMessage(String messageFromClient)
   {

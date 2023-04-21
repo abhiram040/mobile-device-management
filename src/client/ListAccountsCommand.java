@@ -8,7 +8,7 @@ public class ListAccountsCommand extends Command
   /*
    * @brief The constructor that sets member variables
    * @param outputText The text prompt to be displayed 
-   * @param inputs The initial input to be asked for 
+   * @param inputs The initial inputs to be asked for 
    */
   public ListAccountsCommand(String outputText, List<String> inputs)
   {

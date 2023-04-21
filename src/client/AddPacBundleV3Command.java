@@ -8,7 +8,7 @@ public class AddPacBundleV3Command extends Command
   /*
    * @brief The constructor that sets member variables
    * @param outputText The text prompt to be displayed 
-   * @param inputs The initial input to be asked for 
+   * @param inputs The initial inputs to be asked for 
    */
   public AddPacBundleV3Command(String outputText, List<String> inputs)
   {
