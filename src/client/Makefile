@@ -5,13 +5,10 @@ JR = java
 .java.class:
 	$(JC) $(JFLAGS) $*.java -Xlint
 
-# This uses the line continuation character (\) for readability
-# You can list these all on a single line, separated by a space instead.
-# If your version of make can't handle the leading tabs on each
-# line, just remove them (these are also just added for readability).
 CLASSES = \
 	MDMClient.java \
 	AddAccountV1Command.java \
+	CommandFactory.java \
 	AddAccountV2Command.java \
 	AddPacBundleV1Command.java \
 	AddPacBundleV2Command.java \

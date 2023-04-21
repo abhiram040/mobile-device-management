@@ -1,8 +1,14 @@
+/*
+ * @brief Responsible for composing the necessary components for the client to run
+ */
 public class MDMClient
 {
   private static UI ui;
   private static ClientMessageHandler clientMessageHandler;
 
+  /*
+   * @brief The client loop that will loop forever
+   */
   private static void clientLoop()
   {
     ui.printUI();
@@ -17,6 +23,9 @@ public class MDMClient
     }
   }
 
+  /*
+   * @brief The main function that starts the program
+   */
   public static void main(String[] args) 
   {
     ui = new UI();

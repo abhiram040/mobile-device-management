@@ -1,3 +1,6 @@
+/*
+ * @brief An ENUM where each represents an option that the user can interact with
+ */
 public enum MenuOption
 {
   ADD_USER,

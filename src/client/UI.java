@@ -1,12 +1,26 @@
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
+/*
+ * @brief The UI is responsible for taking user inputs and displaying a prompt and server response
+ */
 class UI
 {
-  public final Map<MenuOption, Command> uiMap = createMap();
+  private CommandFactory commandFactory;
+  private Map<MenuOption, Command> uiMap;
+  
+  /*
+   * @brief The constructor constructs the CommandFactory and then builds the UI's map
+   */
+  public UI()
+  {
+    commandFactory = new CommandFactory();
+    uiMap = createMap();
+  }
 
+  /*
+   * @brief Displays the UI by iterating through the uiMap
+   */
   public void printUI()
   {
     System.out.println();
@@ -33,6 +47,41 @@ class UI
     }
   }
 
+  /*
+   * @brief Displays the response message from the server
+   * @param messageContainer The parsed message from the server
+   */
+  public void displayResponse(MessageContainer messageContainer)
+  {
+    String messageResult = messageContainer.isSuccessful ? "SUCCESS" : "INPUT ERROR";
+    
+    System.out.println("\n==============================");
+    System.out.println("OPERATION: " + messageContainer.menuOption + " = " + messageResult);
+    System.out.println("Content: " + messageContainer.messageContents);
+    System.out.println("==============================");
+  }
+
+  /*
+   * @brief Create the UI map by iterating through all of the MenuOption ENUMs
+   *        and constructing the Commands to be tied to each of those ENUMs
+   * @return A UI map that binds an ENUM option to a command that will build a message to the server
+   */
+  private Map<MenuOption, Command> createMap()
+  {
+    Map<MenuOption, Command> newMap = new TreeMap<MenuOption, Command>();
+    for (MenuOption menuOption : MenuOption.values())
+    {
+      Command newCommand = commandFactory.createCommand(menuOption);
+      newMap.put(menuOption, newCommand);
+    }
+    return newMap;
+  }
+
+  /*
+   * @brief Retrieve the user input from the console and construct a message to send to the server
+   * @return The message to the server, constructed based on the user inputs when the related
+   *         command is executed
+   */
   public String retrieveUserInput()
   {
     final int lastMenuVal = MenuOption.values()[MenuOption.values().length - 1].ordinal() + 1;
@@ -67,100 +116,4 @@ class UI
     return messageToServer;
   }
 
-  private Map<MenuOption, Command> createMap()
-  {
-    Map<MenuOption, Command> newMap = new TreeMap<MenuOption, Command>();
-    for (MenuOption menuOption : MenuOption.values())
-    {
-      Command newCommand = buildCommand(menuOption);
-      newMap.put(menuOption, newCommand);
-    }
-    return newMap;
-  }
-  
-  public void displayResponse(MessageContainer messageContainer)
-  {
-    String messageResult = messageContainer.isSuccessful ? "SUCCESS" : "INPUT ERROR";
-    
-    System.out.println("\n==============================");
-    System.out.println("OPERATION: " + messageContainer.menuOption + " = " + messageResult);
-    System.out.println("Content: " + messageContainer.messageContents);
-    System.out.println("==============================");
-  }
-
-  private Command buildCommand(MenuOption menuOption)
-  {
-    switch(menuOption)
-    {
-      case ADD_USER:
-        return new AddUserCommand("Add User", Arrays.asList("First Name", "Last Name", "Phone Number", "Address", "Email Address"));
-
-      case ADD_USERS:
-        return new AddUsersCommand("Add Users", Arrays.asList("First Name", "Last Name", "Phone Number", "Address", "Email Address"));
-
-      case UPDATE_USER:
-        return new UpdateUserCommand("Update User", Arrays.asList("Username"));
-
-      case DELETE_USER:
-        return new DeleteUserCommand("Delete User", Arrays.asList("Username"));
-
-      case DELETE_USERS:
-        return new DeleteUsersCommand("Delete Users", Arrays.asList("Username"));
-
-      case ADD_ACCOUNT_V1:
-        return new AddAccountV1Command("Add Account", Arrays.asList("Phone Number", "Username", "Service Bundle"));
-
-      case ADD_ACCOUNT_V2:
-        return new AddAccountV2Command("Add Account", Arrays.asList("Account ID"));
-
-      case DELETE_ACCOUNT:
-        return new DeleteAccountCommand("Delete Account", Arrays.asList("Phone Number"));
-
-      case UPDATE_ACCOUNT:
-        return new UpdateAccountCommand("Update Account", Arrays.asList("Phone Number", "Bundle Name"));
-
-      case ADD_PRE_BUNDLE:
-        return new AddPreBundleCommand("Add Preconfigured Bundle", Arrays.asList("Bundle Name"));
-
-      case ADD_PAC_BUNDLE_V1:
-        return new AddPacBundleV1Command("Add PaC Bundle", Arrays.asList("Bundle Name"));
-
-      case ADD_PAC_BUNDLE_V2:
-        return new AddPacBundleV2Command("Add PaC Bundle with Calling Option", Arrays.asList("Calling Plan Name"));
-
-      case ADD_PAC_BUNDLE_V3:
-        return new AddPacBundleV3Command("Add PaC Bundle with Messaging Option", Arrays.asList("Messaging Plan Name"));
-
-      case LIST_USER_DETAILS:
-        return new ListUserDetailsCommand("List User Details", Arrays.asList("Username"));
-
-      case LIST_ALL_USERS:
-        return new ListAllUsersCommand("List All Users' Names", new ArrayList<String>());
-
-      case LIST_ACCOUNT:
-        return new ListAccountCommand("List Account", Arrays.asList("Phone Number"));
-
-      case LIST_ACCOUNTS:
-        return new ListAccountsCommand("List Accounts", Arrays.asList("Username"));
-
-      case LIST_MONTHLY_FEES:
-        return new ListMonthlyFeesCommand("List Monthly Fees", Arrays.asList("Phone Number"));
-
-      case LIST_MONTHLY_FEES_ALL:
-        return new ListMonthlyFeesAllCommand("List Monthly Fees All Accounts", Arrays.asList("Username"));
-
-      case LIST_BUNDLE_DETAILS:
-        return new ListBundleDetailsCommand("List Bundle Details", Arrays.asList("Bundle Name"));
-
-      case LIST_ALL_PRE_BUNDLES:
-        return new ListAllPreBundlesCommand("List All Preconfigured Bundle Names", new ArrayList<String>());
-
-      case LIST_ALL_PAC_BUNDLES:
-        return new ListAllPacBundlesCommand("List All PaC Bundle Names", new ArrayList<String>());
-
-      default:
-        System.out.println("Invalid menuOption");
-        return new StubCommand();
-    }
-  }
 }
