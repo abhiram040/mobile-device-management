@@ -52,7 +52,7 @@ public class ClientMessageHandler
   }
 
   /*
-   * @brief Retrieves the next message from the server
+   * @brief Retrieves the next message from the server in a packed format
    * @return The message is a usable format
    */
   public MessageContainer retrieveMessage()

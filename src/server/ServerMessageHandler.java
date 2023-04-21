@@ -3,6 +3,10 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/*
+ * @brief Responsible for sending messages to the client, receiving messages
+ *        from the client, and parsing them into a usable format
+ */
 public class ServerMessageHandler
 {
   private final int port = 1234;
@@ -11,6 +15,10 @@ public class ServerMessageHandler
   private ObjectOutputStream oos;
   private ObjectInputStream ois;
 
+  /*
+   * @brief Constructor that creates the connection to the client and creates
+   *        the streams for sending/receiving messages
+   */
   public ServerMessageHandler()
   {
     try
@@ -19,7 +27,7 @@ public class ServerMessageHandler
 
       System.out.println("Waiting for client to connect...");
       socket = server.accept();
-      System.out.println("One client is connected! Waiting for messages...");
+      System.out.println("One client has connected! Waiting for messages...");
       oos = new ObjectOutputStream(socket.getOutputStream());
       ois = new ObjectInputStream(socket.getInputStream());
     }
@@ -29,6 +37,10 @@ public class ServerMessageHandler
     }
   }
 
+  /*
+   * @brief Sends a message to the client
+   * @param messageToClient A string with the server response information packed
+   */
   private void sendMessage(String messageToClient)
   {
     try
@@ -41,6 +53,10 @@ public class ServerMessageHandler
     }
   }
 
+  /*
+   * @brief Retrieves the next message from the client in a packed format
+   * @return The message is a usable format
+   */
   public MessageContainer retrieveMessage()
   {
     MessageContainer messageContainer = new MessageContainer();
@@ -56,39 +72,45 @@ public class ServerMessageHandler
     return messageContainer;
   }
   
+  /*
+   * @brief Build and send the response message to the client
+   * @param menuOption The specified menu option
+   * @param isSuccessful True or false based on if the server handled the client signal successfully or not
+   * @param message The detailed message to be sent to the client
+   */
   public void buildAndSendResponseMessage(MenuOption menuOption, boolean isSuccessful, String message)
   {
     int responseType = isSuccessful ? 1 : 0;
     String messageToClient = menuOption.ordinal() + "=" + responseType + ";" + message;
     
-    // TODO: Debug, can be deleted later
+    // TODO: DEBUG - DELETE LATER
     System.out.println("messageToClient: " + messageToClient);
     
     sendMessage(messageToClient);
   }
 
+  /*
+   * @brief Parses the message from the client into a usable format
+   * @param messageFromClient The message in a packed format
+   * @return The message is a usable format
+   */
   private MessageContainer parseClientMessage(String messageFromClient)
   {
     System.out.println("message from client: " + messageFromClient);
-    final int MINIMUM_MESSAGE_SIZE = 3;
 
     MessageContainer messageContainer = new MessageContainer();
     try
     {
-      // some messages container less than this size thou? like 15 list all users' names
-      // if (messageFromClient.length() < MINIMUM_MESSAGE_SIZE + 1)
-      // {
-      //   throw new Exception("Invalid message");
-      // }
-
-      // this works for single digit only?? needs to be fixed
       String messageOption = "20";
-      for (int i = 0; i < messageFromClient.length(); i++) {
-        if (messageFromClient.charAt(i) == '=') {
+      for (int i = 0; i < messageFromClient.length(); i++)
+      {
+        if (messageFromClient.charAt(i) == '=')
+        {
           messageOption = messageFromClient.substring(0, i);
           break;
         }
       }
+      // TODO: DEBUG - DELETE LATER
       System.out.println("message option is: " + messageOption);
       MenuOption selectedOption = MenuOption.values()[Integer.parseInt(messageOption)];
       messageContainer.menuOption = selectedOption;

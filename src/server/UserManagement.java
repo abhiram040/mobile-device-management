@@ -5,23 +5,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * @brief Responsible for handling all interactions with users
+ */
 public class UserManagement implements PropertyChangeListener
 {
   Map<String, User> users = new HashMap<>();
   private MessageContainer messageContainer;
-
   ServerMessageHandler serverMessageHandler;
 
+  /*
+   * @brief Default constructor
+   */
   public UserManagement()
   {
-
   }
 
+  /*
+   * @brief Constructor which sets the serverMessageHandler
+   * @param msgHandler The server's message handler for interacting with the client
+   */
   public UserManagement(ServerMessageHandler msgHandler)
   {
     this.serverMessageHandler = msgHandler;
   }
 
+  /*
+   * @brief Sets the messageContainer and performs the requested task
+   * @param evt A triggered event that AccountManagement is waiting to act on
+   */
   public void propertyChange(PropertyChangeEvent evt)
   {
     System.out.println("user management activity");
@@ -29,6 +41,9 @@ public class UserManagement implements PropertyChangeListener
     this.performRequestedTask();
   }
 
+  /*
+   * @brief Attempts to execute the requested task, builds the response message, and sends it
+   */
   public void performRequestedTask()
   {
     User user;
@@ -96,7 +111,8 @@ public class UserManagement implements PropertyChangeListener
       case LIST_USER_DETAILS:
         user = this.getUser(messageContainer.messageContents.get(0));
         returnMsg = new StringBuilder();
-        if (user != null) {
+        if (user != null)
+        {
           isSuccessful = true;
           returnMsg.append(user.fullName + " " + user.address + " " + user.email);
           break;
@@ -112,7 +128,8 @@ public class UserManagement implements PropertyChangeListener
           isSuccessful = true;
           i++;
         }
-        if (!isSuccessful) {
+        if (!isSuccessful)
+        {
           returnMsg.append("no users yet");
         }
         break;
@@ -122,16 +139,20 @@ public class UserManagement implements PropertyChangeListener
         System.out.println("Nothing to be done by User Manager.\n");
         break;
     }
-    // TODO: I'd suggest designing the code so this is the only message call.
-    // ie. Return the output of a task to performRequestedTask and then send it here.
     if (isHandled) {
       serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
     }
   }
 
-  public User createUser(List<String> messageContents) {
+  /*
+   * @brief Creates the specified user based on the messageContents
+   * @param messageContents A list of strings with the user's inputted information
+   * @return The created user
+   */
+  public User createUser(List<String> messageContents)
+  {
     String fullName = messageContainer.messageContents.get(0) 
-              + " " + messageContainer.messageContents.get(1);
+                      + " " + messageContainer.messageContents.get(1);
     // String phoneNumber = messageContainer.messageContents.get(2);
     String address = messageContainer.messageContents.get(3);
     String email = messageContainer.messageContents.get(4);
@@ -139,6 +160,11 @@ public class UserManagement implements PropertyChangeListener
     return new User(fullName, address, email);
   }
 
+  /*
+   * @brief Creates the specified users based on the messageContents
+   * @param messageContents A list of strings with the users' inputted information
+   * @return A list of created users
+   */
   public List<User> createUserList(List<String> messageContents) {
     List<User> userList = new ArrayList<>();
     for (int i = 0; i < messageContainer.messageContents.size(); i+=5) {
@@ -152,16 +178,28 @@ public class UserManagement implements PropertyChangeListener
     return userList;
   }
 
-  public List<String> createUserNameList(List<String> messageContents) {
+  /*
+   * @brief Adds the messageContents' username
+   * @param messageContents A list of strings with the users' inputted information
+   * @return A list of usernames
+   */
+  public List<String> createUserNameList(List<String> messageContents)
+  {
     //serverMessageHandler.sendMessage("User" + user.getName() + " added to the list of users.\n");
     List<String> userNameList = new ArrayList<>();
-    for (String userName: messageContents) {
+    for (String userName: messageContents)
+    {
       userNameList.add(userName);
     }
 
     return userNameList;
   }
 
+  /*
+   * @brief Adds the user to storage
+   * @param user The specified user
+   * @return True or false if it was successful or not
+   */
   public boolean addUser(User user)
   {
     if (users.containsKey(user.getName()))
@@ -174,6 +212,11 @@ public class UserManagement implements PropertyChangeListener
     return true;
   }
 
+  /*
+   * @brief Adds the users to storage
+   * @param user The specified users
+   * @return True or false if it was successful or not
+   */
   public boolean addUsers(List<User> userList)
   {
     for (User user : userList)
@@ -188,11 +231,21 @@ public class UserManagement implements PropertyChangeListener
     return true;
   }
 
+  /*
+   * @brief Gets the user tied to the fullName
+   * @param fullName The specified user's full name
+   * @return The user tied to the full name
+   */
   public User getUser(String fullName)
   {
     return users.get(fullName);
   }
 
+  /*
+   * @brief Update the user with the new information
+   * @param user The user information to be changed to
+   * @return True or false if it was successful or not
+   */
   public boolean updateUser(User user)
   {
     User userUpdate = users.get(user.fullName);
@@ -204,7 +257,12 @@ public class UserManagement implements PropertyChangeListener
     }
     return false;
   }
-
+  
+  /*
+   * @brief Delete the specified user
+   * @param fullName The full name tied to the user
+   * @return True or false if it was successful or not
+   */
   public boolean deleteUser(String fullName)
   {
     if (!users.containsKey(fullName))
@@ -216,6 +274,11 @@ public class UserManagement implements PropertyChangeListener
     return true;
   }
 
+  /*
+   * @brief Delete the specified users
+   * @param userNameList A list of usernames
+   * @return True or false if it was successful or not
+   */
   public boolean deleteUsers(List<String> userNameList)
   {
     boolean someDeleted = false;
@@ -227,6 +290,10 @@ public class UserManagement implements PropertyChangeListener
     return someDeleted;
   }
 
+  /*
+   * @brief Add the associated account number to the user
+   * @param user The user to have an account number added
+   */
   public void addAssociatedAccountsNo(User user) 
   {
     User userNumOfAssociatedAccounts = users.get(user.fullName);

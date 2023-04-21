@@ -285,7 +285,7 @@ public class AccountManagement implements PropertyChangeListener
   /*
    * @brief Sets the management services
    * @param bm The bundle management service
-   * @@param um The user manamagement service
+   * @param um The user manamagement service
    */
   public void setMangerReferences(BundleManagement bm, UserManagement um)
   {
@@ -293,6 +293,11 @@ public class AccountManagement implements PropertyChangeListener
     this.userManagement = um;
   }
 
+  /*
+   * @brief Gets the bundle tied to the associated bundle name
+   * @param bundleName The specified bundle name
+   * @return The bundle associated with the bundle name
+   */
   public Bundle getBundle(String bundleName)
   {
     Bundle bundle;

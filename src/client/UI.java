@@ -9,7 +9,7 @@ class UI
   private Map<MenuOption, Command> uiMap;
   
   /*
-   * @brief The constructor constructs the CommandFactory and then builds the UI's map
+   * @brief The constructor builds the UI's map
    */
   public UI()
   {
