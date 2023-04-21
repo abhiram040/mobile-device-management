@@ -35,6 +35,7 @@ public class UserManagement implements PropertyChangeListener
     List<User> userList = new ArrayList<>();
     StringBuilder returnMsg = new StringBuilder();
     boolean isSuccessful = false;
+    boolean isHandled = true;
     switch(messageContainer.menuOption)
     {
       case ADD_USER:
@@ -117,13 +118,15 @@ public class UserManagement implements PropertyChangeListener
         break;
 
       default:
+        isHandled = false;
         System.out.println("Nothing to be done by User Manager.\n");
         break;
-      
     }
     // TODO: I'd suggest designing the code so this is the only message call.
     // ie. Return the output of a task to performRequestedTask and then send it here.
-    serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
+    if (isHandled) {
+      serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
+    }
   }
 
   public User createUser(List<String> messageContents) {

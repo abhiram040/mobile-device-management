@@ -61,6 +61,7 @@ public class AccountManagement implements PropertyChangeListener
     Bundle bundle;
     ServiceAccount account;
     boolean isSuccessful = false;
+    boolean isHandled = true;
 
     switch(messageContainer.menuOption)
     {
@@ -172,10 +173,13 @@ public class AccountManagement implements PropertyChangeListener
         break;
 
       default:
+        isHandled = false;
         System.out.println("Nothing to be done by AccountManager.\n");
         break;
     }
-    serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
+    if (isHandled) {
+      serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
+    }
   }
 
   /*

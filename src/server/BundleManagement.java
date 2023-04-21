@@ -49,6 +49,7 @@ public class BundleManagement implements PropertyChangeListener
     Bundle bundle;
     StringBuilder returnMsg = new StringBuilder();
     boolean isSuccessful = false;
+    boolean isHandled = true;
     // case wise handling of message passed down by server
     switch(messageContainer.menuOption)
     {
@@ -134,10 +135,13 @@ public class BundleManagement implements PropertyChangeListener
         break;
 
       default:
+        isHandled = false;
         System.out.println("Nothing to be done by Bundle Manager.\n");
         break;
     }
-    serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
+    if (isHandled) {
+      serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
+    }
   }
 
   /*

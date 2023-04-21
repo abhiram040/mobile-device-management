@@ -67,6 +67,7 @@ public class ClientMessageHandler
     {
       System.out.println("Error occurred retrieving a message");
     }
+    System.out.println("message retrieved from server: " + messageContainer.menuOption + " " + messageContainer.messageContents);
     return messageContainer;
   }
 
