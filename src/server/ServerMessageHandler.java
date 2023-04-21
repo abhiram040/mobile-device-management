@@ -69,17 +69,27 @@ public class ServerMessageHandler
 
   private MessageContainer parseClientMessage(String messageFromClient)
   {
+    System.out.println("message from client: " + messageFromClient);
     final int MINIMUM_MESSAGE_SIZE = 3;
 
     MessageContainer messageContainer = new MessageContainer();
     try
     {
-      if (messageFromClient.length() < MINIMUM_MESSAGE_SIZE + 1)
-      {
-        throw new Exception("Invalid message");
-      }
+      // some messages container less than this size thou? like 15 list all users' names
+      // if (messageFromClient.length() < MINIMUM_MESSAGE_SIZE + 1)
+      // {
+      //   throw new Exception("Invalid message");
+      // }
 
-      String messageOption = messageFromClient.substring(0,1);
+      // this works for single digit only?? needs to be fixed
+      String messageOption = "20";
+      for (int i = 0; i < messageFromClient.length(); i++) {
+        if (messageFromClient.charAt(i) == '=') {
+          messageOption = messageFromClient.substring(0, i);
+          break;
+        }
+      }
+      System.out.println("message option is: " + messageOption);
       MenuOption selectedOption = MenuOption.values()[Integer.parseInt(messageOption)];
       messageContainer.menuOption = selectedOption;
 
@@ -96,6 +106,7 @@ public class ServerMessageHandler
     }
     catch(Exception e)
     {
+      System.out.println("error: " + e);
       System.out.println("Error parsing the message from the client");
     }
     return messageContainer;

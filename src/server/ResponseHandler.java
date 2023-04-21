@@ -34,12 +34,6 @@ public class ResponseHandler
     this.support.removePropertyChangeListener(pcl);
   }
 
-  public void sendMessageContainer(MessageContainer messageContainer)
-  {
-    this.support.firePropertyChange("Client Message", this.messageContainer, messageContainer);
-    this.messageContainer = messageContainer;
-  }
-
   public void handleResponse()
   {
     MessageContainer messageContainer = serverMessageHandler.retrieveMessage();
@@ -58,4 +52,11 @@ public class ResponseHandler
     System.out.println("Delegating work for task: " + messageContainer.menuOption + " to different managers.");
     sendMessageContainer(messageContainer);
   }
+
+  public void sendMessageContainer(MessageContainer messageContainer)
+  {
+    this.support.firePropertyChange("Client Message", this.messageContainer, messageContainer);
+    this.messageContainer = messageContainer;
+  }
 }
+
