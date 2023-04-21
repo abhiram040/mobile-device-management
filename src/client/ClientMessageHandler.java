@@ -31,7 +31,7 @@ public class ClientMessageHandler
       isSuccessful = attemptToConnect();
       if (!isSuccessful)
       {
-        System.out.println("Retrying in "+ RETRY_TIME + " seconds...");
+        System.out.println("Retrying in " + RETRY_TIME + " seconds...");
         try
         {
           Thread.sleep(RETRY_TIME * 1000);
