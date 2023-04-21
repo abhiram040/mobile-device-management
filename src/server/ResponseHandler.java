@@ -5,23 +5,12 @@ public class ResponseHandler
 {
   private MessageContainer messageContainer;
   private PropertyChangeSupport support;
-  private AccountManagement accountManagement;
-  private BundleManagement bundleManagement;
-  private UserManagement userManagement;
   private ServerMessageHandler serverMessageHandler;
 
   public ResponseHandler(ServerMessageHandler serverMessageHandler)
   {
     this.support = new PropertyChangeSupport(this);
     this.serverMessageHandler = serverMessageHandler;
-	
-    this.accountManagement = new AccountManagement(serverMessageHandler);
-    this.bundleManagement = new BundleManagement(serverMessageHandler);
-    this.userManagement = new UserManagement(serverMessageHandler);
-    
-    this.addPropertyChangeListener(accountManagement);
-    this.addPropertyChangeListener(bundleManagement);
-    this.addPropertyChangeListener(userManagement);
   }
 
   public void addPropertyChangeListener(PropertyChangeListener pcl)
