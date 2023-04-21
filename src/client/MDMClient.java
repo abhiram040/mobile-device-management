@@ -12,6 +12,7 @@ public class MDMClient
     {
       clientMessageHandler.sendMessage(messageToServer);
       MessageContainer messageContainer = clientMessageHandler.retrieveMessage();
+      System.out.println("message container before display response: " + messageContainer.menuOption + " " + messageContainer.messageContents);
       ui.displayResponse(messageContainer);
     }
     else

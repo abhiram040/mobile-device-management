@@ -1,11 +1,9 @@
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ClientMessageHandler
 {
@@ -57,31 +55,41 @@ public class ClientMessageHandler
   }
   
 
-  private MessageContainer parseServerMessage(String messageFromClient)
+  private MessageContainer parseServerMessage(String messageFromServer)
   {
     final int MINIMUM_MESSAGE_SIZE = 2;
 
     MessageContainer messageContainer = new MessageContainer();
+    boolean isSuccessful = false;
     try
     {
-      if (messageFromClient.length() < MINIMUM_MESSAGE_SIZE + 1)
-      {
-        throw new Exception("Invalid message");
+      String messageOption = "20";
+      System.out.println("message length: " + messageFromServer.length());
+      for (int i = 0; i < messageFromServer.length(); i++) {
+        System.out.println("message char: " + messageFromServer.charAt(i));
+        if (messageFromServer.charAt(i) == '=') {
+          messageOption = messageFromServer.substring(0, i);
+          MenuOption selectedOption = MenuOption.values()[Integer.parseInt(messageOption)];
+          messageContainer.menuOption = selectedOption;
+          isSuccessful = (Integer.parseInt(messageFromServer.substring(i + 1, i + 2)) == 1);
+          System.out.println("message from server: " + messageFromServer + " isSuccessful: " + isSuccessful);
+          messageContainer.isSuccessful = isSuccessful;
+          String msg = messageFromServer.substring(i + 3, messageFromServer.length());
+          System.out.println("messages part only: " + msg);
+          messageContainer.messageContents = new ArrayList<String>(Arrays.asList(msg.split(" ")));
+          break;
+        }
       }
 
-      String messageOption = messageFromClient.substring(0,1);
-      MenuOption selectedOption = MenuOption.values()[Integer.parseInt(messageOption)];
-      messageContainer.menuOption = selectedOption;
-	  
-      boolean isSuccessful = (Integer.parseInt(messageFromClient.substring(2,3)) == 1);
-      messageContainer.isSuccessful = isSuccessful;
-
-      messageContainer.messageContents = messageFromClient.substring(4, messageFromClient.length());
+      System.out.println("messageOption: " + messageOption);
+      System.out.println("message successful: " + isSuccessful);
+      System.out.println("messageContents: " + messageContainer.messageContents);
     }
     catch(Exception e)
     {
-      System.out.println("Error parsing the message from the client");
+      System.out.println("Error parsing the message from the server");
     }
+
     return messageContainer;
   }
 }
