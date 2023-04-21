@@ -70,15 +70,7 @@ public class AccountManagement implements PropertyChangeListener
         fullName = messageContainer.messageContents.get(1);
         user = userManagement.getUser(fullName);
         bundleName = messageContainer.messageContents.get(2);
-        if (!bundleManagement.isBundleRegistered(bundleName))
-        {
-          bundle = new Bundle(bundleName);
-          bundleManagement.addBundle(bundle);
-        }
-        else
-        {
-          bundle = bundleManagement.getBundle(bundleName);
-        }
+        bundle = getBundle(bundleName);
         isSuccessful = this.addServiceAccount(user, phoneNumber, bundle);
         userManagement.addAssociatedAccountsNo(user);
         if (isSuccessful)
@@ -114,7 +106,7 @@ public class AccountManagement implements PropertyChangeListener
       case UPDATE_ACCOUNT:
         phoneNumber = messageContainer.messageContents.get(0);
         bundleName = messageContainer.messageContents.get(1);
-        bundle = new Bundle(bundleName);
+        bundle = getBundle(bundleName);
         isSuccessful = this.updateServiceAccount(phoneNumber, bundle);
         if (isSuccessful)
         {
@@ -299,5 +291,21 @@ public class AccountManagement implements PropertyChangeListener
   {
     this.bundleManagement = bm;
     this.userManagement = um;
+  }
+
+  public Bundle getBundle(String bundleName)
+  {
+    Bundle bundle;
+    if (!bundleManagement.isBundleRegistered(bundleName))
+        {
+          bundle = new Bundle(bundleName);
+          bundleManagement.addBundle(bundle);
+          return bundle;
+        }
+        else
+        {
+          bundle = bundleManagement.getBundle(bundleName);
+          return bundle;
+        }
   }
 }
