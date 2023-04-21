@@ -32,7 +32,7 @@ public class UserManagement implements PropertyChangeListener
 
   /*
    * @brief Sets the messageContainer and performs the requested task
-   * @param evt A triggered event that AccountManagement is waiting to act on
+   * @param evt A triggered event that UserManagement is waiting to act on
    */
   public void propertyChange(PropertyChangeEvent evt)
   {
