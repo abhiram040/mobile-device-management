@@ -19,18 +19,36 @@ public class ClientMessageHandler
 
   /*
    * @brief Constructor that creates the connection to the server and creates
-   *        the streams for sending/receiving messages
+   *        the streams for sending/receiving messages. Loops until the server connection
+   *        is successful.
    */
   public ClientMessageHandler()
   {
     boolean isSuccessful = false;
     while (!isSuccessful)
     {
+      System.out.println("Attempting to connect to the server...");
       isSuccessful = attemptToConnect();
+      if (!isSuccessful)
+      {
+        System.out.println("Retrying in "+ RETRY_TIME + " seconds...");
+        try
+        {
+          Thread.sleep(RETRY_TIME * 1000);
+        }
+        catch(Exception e)
+        {
+          System.out.println("Error occurred during sleep");
+        }
+      }
     }
     
   }
   
+  /*
+   * @brief Attempts to connect to the server
+   * @return True or false depending on if it connected to the server correctly
+   */
   public boolean attemptToConnect()
   {
     boolean isSuccessful = false;
@@ -44,15 +62,7 @@ public class ClientMessageHandler
     }
     catch(Exception e)
     {
-      System.out.println("Server is down. Retrying in "+ RETRY_TIME + " seconds");
-      try
-      {
-        Thread.sleep(RETRY_TIME*1000);
-      }
-      catch(Exception sleepErr)
-      {
-        System.out.println("Sleep was interrupted");
-      }
+      System.out.println("Connection attempt to server was unsuccessful!");
     }
     return isSuccessful;
   }
