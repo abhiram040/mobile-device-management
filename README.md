@@ -1,12 +1,14 @@
 # mobile-device-management
 
+Clone the repository locally. 'make' is the preferred build method but instructions are provided if you do not have 'make' installed.
+
 ## Dependencies
 
-java sdk, make, git
+java sdk, git, make (optional)
 
 ## Server
 
-Handles the client requests and handles the database. In the first terminal...
+Handles the client requests and handles the storage of information. In the first terminal...
 
 ### Build Option #1
 
@@ -27,6 +29,10 @@ rm -rf *.class (Linux) OR del *.class (Windows)
 javac MDMServer.java
 
 java MDMServer
+
+### Design Patterns
+
+TO BE FILLED IN
 
 ## Client
 
@@ -51,6 +57,14 @@ rm -rf *.class (Linux) OR del *.class (Windows)
 javac MDMClient.java
 
 java MDMClient
+
+### Design Patterns
+
+Command Pattern (Refer to Command.java and all other <COMMAND_TYPE>Command.java files)
+
+Simple Factory (Refer to the CommandFactory.java)
+
+Singleton (Refer to the CommandFactory.java)
 
 ### Team Members
 
