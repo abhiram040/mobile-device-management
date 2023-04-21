@@ -3,29 +3,44 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * @brief Responsible for handling all interactions with bundles
+ */
 public class BundleManagement implements PropertyChangeListener
 {
   Map<String, Bundle> bundles = new HashMap<>();
   private MessageContainer messageContainer;
-
   ServerMessageHandler serverMessageHandler;
 
+  /*
+   * @brief Default constructor
+   */
   public BundleManagement()
   {
-
   }
 
+  /*
+   * @brief Constructor which sets the serverMessageHandler
+   * @param msgHandler The server's message handler for interacting with the client
+   */
   public BundleManagement(ServerMessageHandler msgHandler)
   {
     this.serverMessageHandler = msgHandler;
   }
 
+  /*
+   * @brief Sets the messageContainer and performs the requested task
+   * @param evt A triggered event that AccountManagement is waiting to act on
+   */
   public void propertyChange(PropertyChangeEvent evt)
   {
     this.messageContainer = (MessageContainer)evt.getNewValue();
     this.performRequestedTask();
   }
 
+  /*
+   * @brief Attempts to execute the requested task, builds the response message, and sends it
+   */
   public void performRequestedTask()
   {
     String bundleName;
@@ -122,12 +137,14 @@ public class BundleManagement implements PropertyChangeListener
         System.out.println("Nothing to be done by Bundle Manager.\n");
         break;
     }
-    // TODO: I'd suggest designing the code so this is the only message call.
-    // ie. Return the output of a task to performRequestedTask and then send it here.
     serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
   }
 
-  // should be able to handle both preconfig and PaC bundle types
+  /*
+   * @brief Attempts to add the specified bundle to storage
+   * @param bundle The specified bundle
+   * @return True or false based on if the operation was successful or not
+   */
   public boolean addBundle(Bundle bundle)
   {
     if (bundle.isPaCBundle() == false && bundles.containsKey(bundle.name))
@@ -150,6 +167,11 @@ public class BundleManagement implements PropertyChangeListener
     return true;
   }
 
+  /*
+   * @brief Attempts to add the specified calling plan to the bundle
+   * @param callingPlan The specified calling plan
+   * @return True or false based on if the operation was successful or not
+   */
   public boolean addPaCWithCalling(String callingPlan)
   {
     Bundle newBundle = new Bundle("Pick and Choose");
@@ -158,6 +180,11 @@ public class BundleManagement implements PropertyChangeListener
     return success;
   }
 
+  /*
+   * @brief Attempts to add the specified messaging plan to the bundle
+   * @param callingPlan The specified messaging plan
+   * @return True or false based on if the operation was successful or not
+   */
   public boolean addPaCWithMessaging(String messagingPlan)
   {
     Bundle newBundle = new Bundle("Pick and Choose");
@@ -166,11 +193,21 @@ public class BundleManagement implements PropertyChangeListener
     return success;
   }
 
+  /*
+   * @brief Retrieves the bundle based on the name
+   * @param name The specified bundle that maps to the inputted name
+   * @return The related bundle
+   */
   public Bundle getBundle(String name)
   {
     return bundles.get(name);
   }
 
+  /*
+   * @brief Checks if the specified bundle name is registered
+   * @param name The specified bundle name
+   * @return True or false based on if it was found or not
+   */
   public boolean isBundleRegistered(String bundleName)
   {
     if (null == this.getBundle(bundleName) || null == bundleName)
@@ -180,6 +217,11 @@ public class BundleManagement implements PropertyChangeListener
     return true;
   }
 
+  /*
+   * @brief Checks if the specified bundle name is a PAC bundle
+   * @param name The specified bundle name
+   * @return True or false based on if it is a PAC bundle or not
+   */
   public boolean isPaCBundle(Bundle bundle)
   {
     return bundle.isPaCBundle();

@@ -1,3 +1,6 @@
+/*
+ * @brief Responsible for composing the necessary components for the server to run
+ */
 public class MDMServer
 {
   private static ServerMessageHandler serverMessageHandler;
@@ -7,11 +10,17 @@ public class MDMServer
   private static BundleManagement bundleManagement;
   private static AccountManagement accountManagement;
 
+  /*
+   * @brief The server loop that will loop forever
+   */
   private static void serverLoop()
   {
     responseHandler.handleResponse();
   }
 
+  /*
+   * @brief The main function that starts the program
+   */
   public static void main(String[] args) 
   {
     serverMessageHandler = new ServerMessageHandler();
