@@ -15,10 +15,6 @@ public class MDMClient
       System.out.println("message container before display response: " + messageContainer.menuOption + " " + messageContainer.messageContents);
       ui.displayResponse(messageContainer);
     }
-    else
-    {
-       System.out.println("Error: Invalid message from the server");
-    }
   }
 
   public static void main(String[] args) 
