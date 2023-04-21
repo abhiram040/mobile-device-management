@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/*
+ * @brief Solely responsible for creating Commands
+ */
 public class CommandFactory
 {  
   /*
