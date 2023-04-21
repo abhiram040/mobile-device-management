@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * @brief Responsible for handling all interactions with accounts
+ */
 public class AccountManagement implements PropertyChangeListener
 {
   Map<String, ServiceAccount> accounts = new HashMap<>();
@@ -17,23 +20,36 @@ public class AccountManagement implements PropertyChangeListener
   // with a communication interface
   UserManagement userManagement;
   BundleManagement bundleManagement;
-
+  
+  /*
+   * @brief Default constructor
+   */
   public AccountManagement()
   {
-
   }
 
+  /*
+   * @brief Constructor which sets the serverMessageHandler
+   * @param msgHandler The server's message handler for interacting with the client
+   */
   public AccountManagement(ServerMessageHandler msgHandler)
   {
     this.serverMessageHandler = msgHandler;
   }
 
+  /*
+   * @brief Sets the messageContainer and performs the requested task
+   * @param evt A triggered event that AccountManagement is waiting to act on
+   */
   public void propertyChange(PropertyChangeEvent evt)
   {
     this.messageContainer = (MessageContainer)evt.getNewValue();
     this.performRequestedTask();
   }
 
+  /*
+   * @brief Attempts to execute the requested task, builds the response message, and sends it
+   */
   public void performRequestedTask()
   {
     StringBuilder returnMsg = new StringBuilder();
@@ -45,7 +61,7 @@ public class AccountManagement implements PropertyChangeListener
     Bundle bundle;
     ServiceAccount account;
     boolean isSuccessful = false;
-    // case wise handling of message passed down by server
+
     switch(messageContainer.menuOption)
     {
       case ADD_ACCOUNT_V1:
@@ -162,6 +178,11 @@ public class AccountManagement implements PropertyChangeListener
     serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
   }
 
+  /*
+   * @brief Attempts to add the specified service account to storage
+   * @param account The specified account
+   * @return True or false based on if the operation was successful or not
+   */
   public boolean addServiceAccount(ServiceAccount account)
   {
     if (null == account)
@@ -176,6 +197,13 @@ public class AccountManagement implements PropertyChangeListener
     return true;
   }
 
+  /*
+   * @brief Attempts to add the specified service account to storage
+   * @param user The specified user
+   * @param phoneNumber The specified phoneNumber
+   * @param bundle The specified bundle
+   * @return True or false based on if the operation was successful or not
+   */
   public boolean addServiceAccount(User user, String phoneNumber, Bundle bundle)
   {
     if (null == user || null == phoneNumber || null == bundle)
@@ -183,7 +211,6 @@ public class AccountManagement implements PropertyChangeListener
       throw new IllegalArgumentException("Service account details invalid. Nothing added by Account Manager.\n");
     }
 
-    // create account
     ServiceAccount newAccount = new ServiceAccount(phoneNumber, user, bundle);
     if (null != accounts.get(phoneNumber))
     {
@@ -193,6 +220,11 @@ public class AccountManagement implements PropertyChangeListener
     return true;
   }
 
+  /*
+   * @brief Attempts to get the specified service account from storage
+   * @param phoneNumber The specified phoneNumber
+   * @return The related account or null if not found
+   */
   public ServiceAccount getServiceAccount(String phoneNumber)
   {
     System.out.println("DEBUG: Looking for phone number: " + phoneNumber);
@@ -203,7 +235,13 @@ public class AccountManagement implements PropertyChangeListener
     }
     return accounts.get(phoneNumber);
   }
-
+ 
+  /*
+   * @brief Attempts to update the specified service account from storage
+   * @param phoneNumber The specified phoneNumber
+   * @param newBundle The bundle to be changed to
+   * @return True or false based on if the operation was successful or not
+   */
   public boolean updateServiceAccount(String phoneNumber, Bundle newBundle)
   {
     ServiceAccount account = accounts.get(phoneNumber);
@@ -216,6 +254,11 @@ public class AccountManagement implements PropertyChangeListener
     return false;
   }
 
+  /*
+   * @brief Attempts to delete the specified service account from storage
+   * @param phoneNumber The specified phoneNumber
+   * @return True or false based on if the operation was successful or not
+   */
   public boolean deleteServiceAccount(String phoneNumber)
   {
     if (null == phoneNumber || null == accounts.get(phoneNumber))
@@ -226,6 +269,11 @@ public class AccountManagement implements PropertyChangeListener
     return true;
   }
 
+  /*
+   * @brief Attempts to get all of the associated accounts for the specified user from storage
+   * @param user The specified user
+   * @return All of the accounts linked to the specified user
+   */
   public ArrayList<ServiceAccount> getAssociatedAccountsList(User user)
   {
     for (ServiceAccount account : this.accounts.values()) 
@@ -238,6 +286,11 @@ public class AccountManagement implements PropertyChangeListener
     return accountList;
   }
 
+  /*
+   * @brief Sets the management services
+   * @param bm The bundle management service
+   * @@param um The user manamagement service
+   */
   public void setMangerReferences(BundleManagement bm, UserManagement um)
   {
     this.bundleManagement = bm;
