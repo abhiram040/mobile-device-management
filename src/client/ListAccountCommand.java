@@ -1,7 +1,7 @@
 import java.util.List;
 
 /*
- * @brief The command which will ask for details specific to ListAccount
+ * @brief The command which will ask for details specific to ListAccountCommand
  */
 public class ListAccountCommand extends Command
 {

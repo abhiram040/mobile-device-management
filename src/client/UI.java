@@ -2,7 +2,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /*
- * @brief The UI is responsible for taking user inputs and displaying a prompt and server response
+ * @brief Responsible for taking user inputs and displaying a prompt and server response
  */
 class UI
 {
