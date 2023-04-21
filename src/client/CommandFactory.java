@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /*
- * @brief Solely responsible for creating Commands
+ * @brief Singleton factory solely responsible for creating Commands
  */
 public class CommandFactory
 {  
