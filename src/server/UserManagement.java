@@ -61,35 +61,59 @@ public class UserManagement implements PropertyChangeListener
 
       case UPDATE_USER:
         user = this.createUser(messageContainer.messageContents);
-        this.updateUser(user);
-
+        isSuccessful = this.updateUser(user);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully updated user!\n");
+          break;
+        }
+        returnMsg.append("Failed to update the user. Does not exist\n");
         break;
 
       case DELETE_USER:
         String userName = messageContainer.messageContents.get(0);
-        this.deleteUser(userName);
-
+        isSuccessful = this.deleteUser(userName);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully delete user!\n");
+          break;
+        }
+        returnMsg.append("Failed delete user!\n");
         break;
 
       case DELETE_USERS:
         List<String> userNameList = this.createUserNameList(messageContainer.messageContents);
-        this.deleteUsers(userNameList);
-        
+        isSuccessful = this.deleteUsers(userNameList);
+        if (isSuccessful)
+        {
+          returnMsg.append("Successfully delete user!\n");
+          break;
+        }
+        returnMsg.append("Failed delete user!\n");
         break;
 
       case LIST_USER_DETAILS:
         user = this.getUser(messageContainer.messageContents.get(0));
         returnMsg = new StringBuilder();
-        returnMsg.append(user.fullName + " " + user.address + " " + user.email);
-
+        if (user != null) {
+          isSuccessful = true;
+          returnMsg.append(user.fullName + " " + user.address + " " + user.email);
+          break;
+        }
+        returnMsg.append("user does not exist!\n");
         break;
 
       case LIST_ALL_USERS:
         returnMsg = new StringBuilder();
+        int i = 1;
         for (String eachUserName : this.users.keySet()) {
-          returnMsg.append(eachUserName + " ");
+          returnMsg.append("user " + i + ": " + eachUserName + " ");
+          isSuccessful = true;
+          i++;
         }
-
+        if (!isSuccessful) {
+          returnMsg.append("no users yet");
+        }
         break;
 
       default:
@@ -169,7 +193,7 @@ public class UserManagement implements PropertyChangeListener
   public boolean updateUser(User user)
   {
     User userUpdate = users.get(user.fullName);
-    if (user != null)
+    if (users.containsKey(user.fullName))
     {
       userUpdate.address = user.address;
       userUpdate.email = user.email;
@@ -180,7 +204,7 @@ public class UserManagement implements PropertyChangeListener
 
   public boolean deleteUser(String fullName)
   {
-    if (null == users.get(fullName))
+    if (!users.containsKey(fullName))
     {
       return false;
     }
@@ -189,12 +213,15 @@ public class UserManagement implements PropertyChangeListener
     return true;
   }
 
-  public void deleteUsers(List<String> userNameList)
+  public boolean deleteUsers(List<String> userNameList)
   {
+    boolean someDeleted = false;
     for (String userName : userNameList)
     {
       deleteUser(userName);
+      someDeleted = true;
     }
+    return someDeleted;
   }
 
   public void addAssociatedAccountsNo(User user) 
