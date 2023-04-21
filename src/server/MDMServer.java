@@ -25,6 +25,8 @@ public class MDMServer
     responseHandler.addPropertyChangeListener(bundleManagement);
     responseHandler.addPropertyChangeListener(accountManagement);
 
+    accountManagement.setMangerReferences(bundleManagement, userManagement);
+
     while (true)
     {
       serverLoop();

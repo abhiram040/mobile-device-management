@@ -15,8 +15,8 @@ public class AccountManagement implements PropertyChangeListener
   // this class is currently acting as the primary manager to avoid
   // any circular dependancies. Will likely look into replacing referencing
   // with a communication interface
-  UserManagement userManagement = new UserManagement();
-  BundleManagement bundleManagement = new BundleManagement();
+  UserManagement userManagement;
+  BundleManagement bundleManagement;
 
   public AccountManagement()
   {
@@ -53,7 +53,15 @@ public class AccountManagement implements PropertyChangeListener
         fullName = messageContainer.messageContents.get(1);
         user = userManagement.getUser(fullName);
         bundleName = messageContainer.messageContents.get(2);
-        bundle = new Bundle(bundleName);
+        if (!bundleManagement.isBundleRegistered(bundleName))
+        {
+          bundle = new Bundle(bundleName);
+          bundleManagement.addBundle(bundle);
+        }
+        else
+        {
+          bundle = bundleManagement.getBundle(bundleName);
+        }
         isSuccessful = this.addServiceAccount(user, phoneNumber, bundle);
         userManagement.addAssociatedAccountsNo(user);
         if (isSuccessful)
@@ -187,6 +195,7 @@ public class AccountManagement implements PropertyChangeListener
 
   public ServiceAccount getServiceAccount(String phoneNumber)
   {
+    System.out.println("DEBUG: Looking for phone number: " + phoneNumber);
     if (!accounts.containsKey(phoneNumber))
     {
       System.out.println("Cannot find account with that phone number.\n");
@@ -227,5 +236,11 @@ public class AccountManagement implements PropertyChangeListener
       }
     }
     return accountList;
+  }
+
+  public void setMangerReferences(BundleManagement bm, UserManagement um)
+  {
+    this.bundleManagement = bm;
+    this.userManagement = um;
   }
 }

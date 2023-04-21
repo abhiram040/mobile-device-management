@@ -171,6 +171,15 @@ public class BundleManagement implements PropertyChangeListener
     return bundles.get(name);
   }
 
+  public boolean isBundleRegistered(String bundleName)
+  {
+    if (null == this.getBundle(bundleName) || null == bundleName)
+    {
+      return false;
+    }
+    return true;
+  }
+
   public boolean isPaCBundle(Bundle bundle)
   {
     return bundle.isPaCBundle();

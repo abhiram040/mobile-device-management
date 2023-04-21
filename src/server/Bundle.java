@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.ArrayList;
 
 public class Bundle
 {
@@ -7,13 +8,18 @@ public class Bundle
   public String messagingPlan;
   public String dataPlan;
   public double monthlyFees;
-  public static List<String> preConfiguredBundleNames;
+  public static ArrayList<String> preConfiguredBundleNames = new ArrayList<String>() {{
+    add("Platinum");
+    add("Gold");
+    add("Silver");
+    add("Bronze");
+}};
   public static List<String> pacBundleNames;
 
   // General Bundle constructor that takes bundle name and sets defaults for that bundle type
   public Bundle(String name)
   {
-    setPredConfiguredBundleNames();
+    // setPredConfiguredBundleNames();
     setPacBundleNames();
     switch (name)
     {
@@ -57,12 +63,12 @@ public class Bundle
     }
   }
 
-  private void setPredConfiguredBundleNames() {
-    preConfiguredBundleNames.add("Platinum");
-    preConfiguredBundleNames.add("Gold");
-    preConfiguredBundleNames.add("Silver");
-    preConfiguredBundleNames.add("Bronze");
-  }
+  // public void setPredConfiguredBundleNames() {
+  //   preConfiguredBundleNames.add("Platinum");
+  //   preConfiguredBundleNames.add("Gold");
+  //   preConfiguredBundleNames.add("Silver");
+  //   preConfiguredBundleNames.add("Bronze");
+  // }
 
   private void setPacBundleNames() {
 
