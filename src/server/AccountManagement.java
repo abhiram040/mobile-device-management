@@ -166,7 +166,7 @@ public class AccountManagement implements PropertyChangeListener
 
       default:
         isHandled = false;
-        System.out.println("Nothing to be done by AccountManager.\n");
+        System.out.println("Nothing to be done by Account Manager.\n");
         break;
     }
     if (isHandled) {

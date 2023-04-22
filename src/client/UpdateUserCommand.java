@@ -26,7 +26,7 @@ public class UpdateUserCommand extends Command
   {
     String messageToBuild = MenuOption.UPDATE_USER.ordinal() + "=";
     messageToBuild += super.execute();
-    List<String> fieldsToUpdate = Arrays.asList("First Name", "Last Name", "Phone Number", "Address", "Email Address");
+    List<String> fieldsToUpdate = Arrays.asList("Phone Number", "Address", "Email Address");
     for (String fieldToUpdate : fieldsToUpdate)
     {
       System.out.print("Please enter your \'" + fieldToUpdate + "\': ");
