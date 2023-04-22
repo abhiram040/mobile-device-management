@@ -114,7 +114,7 @@ public class UserManagement implements PropertyChangeListener
         if (user != null)
         {
           isSuccessful = true;
-          returnMsg.append(user.fullName + " has " + user.phoneNumbers.size() + "associated phone numbers; with the address: " 
+          returnMsg.append(user.fullName + " has " + user.numOfAssociatedAccounts + " associated accounts with the address: " 
             + user.address + " and email: " + user.email);
           break;
         }
@@ -158,7 +158,7 @@ public class UserManagement implements PropertyChangeListener
     String address = messageContainer.messageContents.get(3);
     String email = messageContainer.messageContents.get(4);
 
-    return new User(fullName, phoneNumber, address, email);
+    return new User(fullName, address, email);
   }
 
   public User createTempUpdateUser(List<String> messageContents)
@@ -168,7 +168,7 @@ public class UserManagement implements PropertyChangeListener
     String address = messageContainer.messageContents.get(2);
     String email = messageContainer.messageContents.get(3);
 
-    return new User(fullName, phoneNumber, address, email);
+    return new User(fullName, address, email);
   }
 
   /*
@@ -320,6 +320,7 @@ public class UserManagement implements PropertyChangeListener
         return false;
       }
       userNumOfAssociatedAccounts.numOfAssociatedAccounts += 1;
+      userNumOfAssociatedAccounts.phoneNumbers.add(phoneNumber);
       return true;
     }
     System.out.println("Specified user or phone number does not exist.\n");
@@ -337,6 +338,7 @@ public class UserManagement implements PropertyChangeListener
         return false;
       }
       userNumOfAssociatedAccounts.numOfAssociatedAccounts -= 1;
+      userNumOfAssociatedAccounts.phoneNumbers.remove(phoneNumber);
       return true;
     }
     System.out.println("Specified user or phone number does not exist.\n");

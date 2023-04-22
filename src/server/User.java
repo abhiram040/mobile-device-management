@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class User
 {
   public String fullName;
-  public ArrayList<String> phoneNumbers;
+  public ArrayList<String> phoneNumbers = new ArrayList<String>();
   public String address;
   public String email;
   public int numOfAssociatedAccounts = 0;
