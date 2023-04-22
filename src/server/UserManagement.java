@@ -76,7 +76,7 @@ public class UserManagement implements PropertyChangeListener
         break;
 
       case UPDATE_USER:
-        user = this.createUser(messageContainer.messageContents);
+        user = this.createTempUpdateUser(messageContainer.messageContents);
         isSuccessful = this.updateUser(user);
         if (isSuccessful)
         {
@@ -91,7 +91,7 @@ public class UserManagement implements PropertyChangeListener
         isSuccessful = this.deleteUser(userName);
         if (isSuccessful)
         {
-          returnMsg.append("Successfully delete user!\n");
+          returnMsg.append("Successfully deleted user!\n");
           break;
         }
         returnMsg.append("Failed delete user!\n");
@@ -102,19 +102,20 @@ public class UserManagement implements PropertyChangeListener
         isSuccessful = this.deleteUsers(userNameList);
         if (isSuccessful)
         {
-          returnMsg.append("Successfully delete user!\n");
+          returnMsg.append("Successfully deleted users!\n");
           break;
         }
-        returnMsg.append("Failed delete user!\n");
+        returnMsg.append("Failed to delete users!\n");
         break;
 
       case LIST_USER_DETAILS:
-        user = this.getUser(messageContainer.messageContents.get(0));
+        user = this.getUser(messageContainer.messageContents.get(0).substring(1));
         returnMsg = new StringBuilder();
         if (user != null)
         {
           isSuccessful = true;
-          returnMsg.append(user.fullName + " " + user.address + " " + user.email);
+          returnMsg.append(user.fullName + " has " + user.phoneNumbers.size() + "associated phone numbers; with the address: " 
+            + user.address + " and email: " + user.email);
           break;
         }
         returnMsg.append("user does not exist!\n");
@@ -153,11 +154,21 @@ public class UserManagement implements PropertyChangeListener
   {
     String fullName = messageContainer.messageContents.get(0) 
                       + " " + messageContainer.messageContents.get(1);
-    // String phoneNumber = messageContainer.messageContents.get(2);
+    String phoneNumber = messageContainer.messageContents.get(2);
     String address = messageContainer.messageContents.get(3);
     String email = messageContainer.messageContents.get(4);
 
-    return new User(fullName, address, email);
+    return new User(fullName, phoneNumber, address, email);
+  }
+
+  public User createTempUpdateUser(List<String> messageContents)
+  {
+    String fullName = messageContainer.messageContents.get(0);
+    String phoneNumber = messageContainer.messageContents.get(1);
+    String address = messageContainer.messageContents.get(2);
+    String email = messageContainer.messageContents.get(3);
+
+    return new User(fullName, phoneNumber, address, email);
   }
 
   /*
@@ -168,7 +179,7 @@ public class UserManagement implements PropertyChangeListener
   public List<User> createUserList(List<String> messageContents) {
     List<User> userList = new ArrayList<>();
     for (int i = 0; i < messageContainer.messageContents.size(); i+=5) {
-      String fullName = messageContainer.messageContents.get(i) + messageContainer.messageContents.get(i + 1);
+      String fullName = messageContainer.messageContents.get(i) + " " + messageContainer.messageContents.get(i + 1);
       // String phoneNumber = messageContainer.messageContents.get(i + 2);
       String address = messageContainer.messageContents.get(i + 3);
       String email = messageContainer.messageContents.get(i + 4);
@@ -281,25 +292,54 @@ public class UserManagement implements PropertyChangeListener
    */
   public boolean deleteUsers(List<String> userNameList)
   {
-    boolean someDeleted = false;
+    boolean successfulDelete = false;
     for (String userName : userNameList)
     {
-      deleteUser(userName);
-      someDeleted = true;
+      successfulDelete = deleteUser(userName);
+      if (successfulDelete == false)
+      {
+        break;
+      }
     }
-    return someDeleted;
+    System.out.println("Could not remove atleast 1 user. Check above output for user removal details.\n");
+    return successfulDelete;
   }
 
   /*
    * @brief Add the associated account number to the user
    * @param user The user to have an account number added
    */
-  public void addAssociatedAccountsNo(User user) 
+  public boolean addAssociatedAccountsNo(User user, String phoneNumber) 
   {
     User userNumOfAssociatedAccounts = users.get(user.fullName);
-    if (user != null)
+    if (null != user && null != phoneNumber)
     {
+      if (userNumOfAssociatedAccounts.phoneNumbers.contains(phoneNumber))
+      {
+        System.out.println("Cannot add multiple accounts with same number to user. Nothing added.\n");
+        return false;
+      }
       userNumOfAssociatedAccounts.numOfAssociatedAccounts += 1;
+      return true;
     }
+    System.out.println("Specified user or phone number does not exist.\n");
+    return false;
+  }
+
+  public boolean removeAssociatedAccountsNo(User user, String phoneNumber)
+  {
+    User userNumOfAssociatedAccounts = users.get(user.fullName);
+    if (null != user && null != phoneNumber)
+    {
+      if (!userNumOfAssociatedAccounts.phoneNumbers.contains(phoneNumber))
+      {
+        System.out.println("Cannot remove account that does not exist with user. Nothing done.\n");
+        return false;
+      }
+      userNumOfAssociatedAccounts.numOfAssociatedAccounts -= 1;
+      return true;
+    }
+    System.out.println("Specified user or phone number does not exist.\n");
+    return false;
   }
 }

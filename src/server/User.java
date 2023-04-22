@@ -1,10 +1,12 @@
+import java.util.ArrayList;
+
 /*
  * @brief Responsible for storing the relevant user information
  */
 public class User
 {
   public String fullName;
-  public String phoneNumber;
+  public ArrayList<String> phoneNumbers;
   public String address;
   public String email;
   public int numOfAssociatedAccounts = 0;
@@ -32,7 +34,7 @@ public class User
   public User(String fullName, String phoneNumber, String address, String email)
   {
     this.fullName = fullName;
-    this.phoneNumber = phoneNumber;
+    this.phoneNumbers.add(phoneNumber);
     this.address = address;
     this.email = email;
   }

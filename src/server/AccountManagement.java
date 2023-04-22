@@ -72,13 +72,12 @@ public class AccountManagement implements PropertyChangeListener
         bundleName = messageContainer.messageContents.get(2);
         bundle = getBundle(bundleName);
         isSuccessful = this.addServiceAccount(user, phoneNumber, bundle);
-        userManagement.addAssociatedAccountsNo(user);
-        if (isSuccessful)
+        if (isSuccessful && userManagement.addAssociatedAccountsNo(user, phoneNumber))
         {
           returnMsg.append("Successfully added service account!\n");
           break;
         }
-        returnMsg.append("Failed to add service account: Account phone number not associated to a recognized account.\n");
+        returnMsg.append("Failed to add service account: Account phone number not associated to a recognized account, or phone number is already registered with this user.\n");
         break;
 
       case ADD_ACCOUNT_V2:
@@ -257,12 +256,14 @@ public class AccountManagement implements PropertyChangeListener
    */
   public boolean deleteServiceAccount(String phoneNumber)
   {
+    boolean success = false;
     if (null == phoneNumber || null == accounts.get(phoneNumber))
     {
       return false;
     }
+    success = this.userManagement.removeAssociatedAccountsNo(accounts.get(phoneNumber).user, phoneNumber);
     accounts.remove(phoneNumber);
-    return true;
+    return success;
   }
 
   /*
