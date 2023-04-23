@@ -71,7 +71,7 @@ public class Bundle
         return;
 
       default:
-        throw new IllegalArgumentException("Illegal Argument - Not a recognized bundle name.");
+        System.out.println("Illegal Argument - Not a recognized bundle name.");
     }
   }
 

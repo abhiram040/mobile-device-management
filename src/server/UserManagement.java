@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.Thread;
 
 /*
  * @brief Responsible for handling all interactions with users
@@ -13,6 +14,7 @@ public class UserManagement implements PropertyChangeListener
   Map<String, User> users = new HashMap<>();
   private MessageContainer messageContainer;
   ServerMessageHandler serverMessageHandler;
+  User lastDeletedUser;
 
   /*
    * @brief Default constructor
@@ -122,14 +124,13 @@ public class UserManagement implements PropertyChangeListener
         break;
 
       case LIST_ALL_USERS:
-        returnMsg = new StringBuilder();
+        isSuccessful = true;
         int i = 1;
         for (String eachUserName : this.users.keySet()) {
           returnMsg.append("user " + i + ": " + eachUserName + " ");
-          isSuccessful = true;
           i++;
         }
-        if (!isSuccessful)
+        if (i == 1)
         {
           returnMsg.append("no users yet");
         }
@@ -286,6 +287,7 @@ public class UserManagement implements PropertyChangeListener
       return false;
     }
     System.out.println("WARNING: Removing user: " + fullName + " and all associated accounts.\n");
+    this.lastDeletedUser = users.get(fullName);
     users.remove(fullName);
     return true;
   }
@@ -317,7 +319,7 @@ public class UserManagement implements PropertyChangeListener
   public boolean addAssociatedAccountsNo(User user, String phoneNumber) 
   {
     User userNumOfAssociatedAccounts = users.get(user.fullName);
-    if (null != user && null != phoneNumber)
+    if (null != userNumOfAssociatedAccounts && null != phoneNumber)
     {
       if (userNumOfAssociatedAccounts.phoneNumbers.contains(phoneNumber))
       {
@@ -335,7 +337,7 @@ public class UserManagement implements PropertyChangeListener
   public boolean removeAssociatedAccountsNo(User user, String phoneNumber)
   {
     User userNumOfAssociatedAccounts = users.get(user.fullName);
-    if (null != user && null != phoneNumber)
+    if (null != userNumOfAssociatedAccounts && null != phoneNumber)
     {
       if (!userNumOfAssociatedAccounts.phoneNumbers.contains(phoneNumber))
       {
@@ -348,5 +350,10 @@ public class UserManagement implements PropertyChangeListener
     }
     System.out.println("Specified user or phone number does not exist.\n");
     return false;
+  }
+
+  public User getLastDeletedUser()
+  {
+    return this.lastDeletedUser;
   }
 }

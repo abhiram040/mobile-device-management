@@ -3,7 +3,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.lang.Thread;
 
 /*
  * @brief Responsible for handling all interactions with accounts
@@ -122,9 +121,11 @@ public class AccountManagement implements PropertyChangeListener
         {
           returnMsg.append("Account inforamtion for provided phone number is as below:");
           returnMsg.append("User with name " + account.user.fullName + " with phone number:" + account.phoneNumber + " has subscribed for bundle:" + account.bundle.name);
+          isSuccessful = true;
           break;
         }
         returnMsg.append("Cannot list an invalid accounts information.\n");
+        isSuccessful = false;
         break;
 
       case LIST_ACCOUNTS:
@@ -137,10 +138,10 @@ public class AccountManagement implements PropertyChangeListener
           returnMsg.append("Cannot pull account list to display for that user.");
           break;
         }
-        returnMsg.append("List of accounts associated with provided user name are listed below:");
+        returnMsg.append("List of accounts associated with " + user.fullName + " are listed below: \n");
         for(ServiceAccount acc : associatedAccountList)
         {
-          returnMsg.append("User with name: " + acc.user.fullName + " with phone number: " + acc.phoneNumber + " has subscribed for bundle: " + acc.bundle.name + ". ");
+          returnMsg.append("Phone Number: " + acc.phoneNumber + " on a " + acc.bundle.name + ". ");
         }
         isSuccessful = true;
 
@@ -151,7 +152,7 @@ public class AccountManagement implements PropertyChangeListener
         if (null != account)
         {
           isSuccessful = true;
-          returnMsg.append("User with name " + account.user.fullName + " has monthly fees of " + account.bundle.monthlyFees + "CAD.");
+          returnMsg.append("User with name " + account.user.fullName + " has monthly fees of $" + account.bundle.monthlyFees + " for the account with phone number " + account.phoneNumber + ".");
           break;
         }
         isSuccessful = false;
@@ -178,31 +179,20 @@ public class AccountManagement implements PropertyChangeListener
 
       case DELETE_USER:
         isHandled = false;
-        fullName = messageContainer.messageContents.get(0).substring(1);
-        try
+        user = userManagement.getLastDeletedUser();
+        if (null == user)
         {
-          // wait for user to be destroyed
-          Thread.sleep(200);
-          if (null != userManagement.getUser(fullName))
-          {
-            System.out.println("Took too long to destroy user. Something is wrong.\n");
-            isSuccessful = false;
-            break;
-          }
-        }
-        catch (InterruptedException e)
-        {
-          System.out.println("Thread fault. Could not pause thread to wait to destroy user.\n");
+          System.out.println("Specified user does not exist in the system. Nothing to be done.");
           isSuccessful = false;
           break;
         }
-        associatedAccountList = getAssociatedAccountsList(fullName);
-        for (ServiceAccount acc : associatedAccountList)
+        associatedAccountList = getAssociatedAccountsList(user);
+        for(ServiceAccount acc : associatedAccountList)
         {
           this.deleteServiceAccount(acc.phoneNumber);
         }
         isSuccessful = true;
-        returnMsg.append("Deleted all associated accounts to deleted user " + fullName + ".");
+        System.out.println("All associated accounts with " + user.fullName + " have been deleted");
         break;
 
       default:
@@ -245,7 +235,7 @@ public class AccountManagement implements PropertyChangeListener
   {
     if (null == user || null == phoneNumber || null == bundle)
     {
-      throw new IllegalArgumentException("Service account details invalid. Nothing added by Account Manager.\n");
+      System.out.println("Service account details invalid. Nothing added by Account Manager.\n");
     }
 
     ServiceAccount newAccount = new ServiceAccount(phoneNumber, user, bundle);
@@ -321,28 +311,6 @@ public class AccountManagement implements PropertyChangeListener
       for (ServiceAccount account : this.accounts.values()) 
       {
         if (account.user.fullName == user.fullName)
-        {
-          accountList.add(account);
-        }
-      }
-      return accountList;
-    }
-    return null;
-  }
-
-    /*
-   * @brief Attempts to get all of the associated accounts for the specified user from storage
-   * @param user The specified user
-   * @return All of the accounts linked to the specified user
-   */
-  public ArrayList<ServiceAccount> getAssociatedAccountsList(String userName)
-  {
-    if (null != userName)
-    {
-      ArrayList<ServiceAccount> accountList = new ArrayList<ServiceAccount>();
-      for (ServiceAccount account : this.accounts.values()) 
-      {
-        if (account.user.fullName == userName)
         {
           accountList.add(account);
         }

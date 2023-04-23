@@ -101,13 +101,20 @@ public class BundleManagement implements PropertyChangeListener
 
       case LIST_BUNDLE_DETAILS:
         bundleName = messageContainer.messageContents.get(0).substring(1);
-        bundle = this.getBundle(bundleName);
-        returnMsg = new StringBuilder();
-        returnMsg.append(bundle.name + " ");
-        returnMsg.append(bundle.callingPlan + " ");
-        returnMsg.append(bundle.messagingPlan + " ");
-        returnMsg.append(bundle.dataPlan + " ");
-        returnMsg.append(bundle.monthlyFees);
+        if (this.isBundleRegistered(bundleName))
+        {
+          bundle = this.getBundle(bundleName);
+          returnMsg = new StringBuilder();
+          returnMsg.append(bundle.name + " ");
+          returnMsg.append(bundle.callingPlan + " ");
+          returnMsg.append(bundle.messagingPlan + " ");
+          returnMsg.append(bundle.dataPlan + " ");
+          returnMsg.append(bundle.monthlyFees);
+          isSuccessful = true;
+          break;
+        }
+        returnMsg.append("That bundle is not yet registered in our database.");
+        isSuccessful = false;
         break;
 
       case LIST_ALL_PRE_BUNDLES:
@@ -120,6 +127,7 @@ public class BundleManagement implements PropertyChangeListener
             returnMsg.append("$" + bundle.monthlyFees + " ");
           }
         }
+        isSuccessful = true;
         break;
 
       case LIST_ALL_PAC_BUNDLES:
@@ -132,6 +140,7 @@ public class BundleManagement implements PropertyChangeListener
             returnMsg.append(bundle.monthlyFees);       
           }
         }
+        isSuccessful = true;
         break;
 
       default:
