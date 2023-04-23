@@ -3,6 +3,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.Thread;
 
 /*
  * @brief Responsible for handling all interactions with accounts
@@ -13,7 +14,7 @@ public class AccountManagement implements PropertyChangeListener
   MessageContainer messageContainer;
   ServerMessageHandler serverMessageHandler;
   ArrayList<ServiceAccount> accountList = new ArrayList<ServiceAccount>();
-  ArrayList<ServiceAccount> displayAccountList = new ArrayList<ServiceAccount>();
+  ArrayList<ServiceAccount> associatedAccountList = new ArrayList<ServiceAccount>();
 
   // this class is currently acting as the primary manager to avoid
   // any circular dependancies. Will likely look into replacing referencing
@@ -116,7 +117,7 @@ public class AccountManagement implements PropertyChangeListener
         break;
 
       case LIST_ACCOUNT:
-        account = this.getServiceAccount(messageContainer.messageContents.get(0));
+        account = this.getServiceAccount(messageContainer.messageContents.get(0).substring(1));
         if (null != account)
         {
           returnMsg.append("Account inforamtion for provided phone number is as below:");
@@ -127,22 +128,30 @@ public class AccountManagement implements PropertyChangeListener
         break;
 
       case LIST_ACCOUNTS:
-        user = userManagement.getUser(messageContainer.messageContents.get(0));
-        displayAccountList = getAssociatedAccountsList(user);
-        returnMsg.append("List of accounts associated with provided user name are listed below:");
-        for(ServiceAccount acc : displayAccountList)
+        user = userManagement.getUser(messageContainer.messageContents.get(0).substring(1));
+        associatedAccountList = getAssociatedAccountsList(user);
+        if (null == associatedAccountList || associatedAccountList.size() == 0)
         {
-          returnMsg.append("User with name: " + acc.user.fullName + " with phone number: " + acc.phoneNumber + " has subscribed for bundle: " + acc.bundle.name);
+          isSuccessful = false;
+          System.out.println("Cannot pull account list to display for that user.\n");
+          returnMsg.append("Cannot pull account list to display for that user.");
+          break;
         }
+        returnMsg.append("List of accounts associated with provided user name are listed below:");
+        for(ServiceAccount acc : associatedAccountList)
+        {
+          returnMsg.append("User with name: " + acc.user.fullName + " with phone number: " + acc.phoneNumber + " has subscribed for bundle: " + acc.bundle.name + ". ");
+        }
+        isSuccessful = true;
 
         break;
 
       case LIST_MONTHLY_FEES:
-        account = this.getServiceAccount(messageContainer.messageContents.get(0));
+        account = this.getServiceAccount(messageContainer.messageContents.get(0).substring(1));
         if (null != account)
         {
           isSuccessful = true;
-          returnMsg.append("User with name " + account.user.fullName + "has monthly fees of " + account.bundle.monthlyFees + "CAD.");
+          returnMsg.append("User with name " + account.user.fullName + " has monthly fees of " + account.bundle.monthlyFees + "CAD.");
           break;
         }
         isSuccessful = false;
@@ -150,17 +159,50 @@ public class AccountManagement implements PropertyChangeListener
         break;
 
       case LIST_MONTHLY_FEES_ALL:
-        user = userManagement.getUser(messageContainer.messageContents.get(0));
+        user = userManagement.getUser(messageContainer.messageContents.get(0).substring(1));
         if (null == user)
         {
           returnMsg.append("User does not exist in the system. Cannot pull monthly fees.\n");
+          isSuccessful = false;
           break;
         }
-        displayAccountList = getAssociatedAccountsList(user);
-        for(ServiceAccount acc : displayAccountList)
+        associatedAccountList = getAssociatedAccountsList(user);
+        double owingSum = 0.0;
+        for(ServiceAccount acc : associatedAccountList)
         {
-          returnMsg.append("User with name " + acc.user.fullName + "has total monthly fees of " + acc.bundle.monthlyFees + "CAD.");
+          owingSum += acc.bundle.monthlyFees;
         }
+        isSuccessful = true;
+        returnMsg.append("User with name " + user.fullName + " has total monthly fees of $" + owingSum + ".");
+        break;
+
+      case DELETE_USER:
+        isHandled = false;
+        fullName = messageContainer.messageContents.get(0).substring(1);
+        try
+        {
+          // wait for user to be destroyed
+          Thread.sleep(200);
+          if (null != userManagement.getUser(fullName))
+          {
+            System.out.println("Took too long to destroy user. Something is wrong.\n");
+            isSuccessful = false;
+            break;
+          }
+        }
+        catch (InterruptedException e)
+        {
+          System.out.println("Thread fault. Could not pause thread to wait to destroy user.\n");
+          isSuccessful = false;
+          break;
+        }
+        associatedAccountList = getAssociatedAccountsList(fullName);
+        for (ServiceAccount acc : associatedAccountList)
+        {
+          this.deleteServiceAccount(acc.phoneNumber);
+        }
+        isSuccessful = true;
+        returnMsg.append("Deleted all associated accounts to deleted user " + fullName + ".");
         break;
 
       default:
@@ -273,14 +315,41 @@ public class AccountManagement implements PropertyChangeListener
    */
   public ArrayList<ServiceAccount> getAssociatedAccountsList(User user)
   {
-    for (ServiceAccount account : this.accounts.values()) 
+    if (null != user)
     {
-      if (account.user.fullName == user.fullName)
+      ArrayList<ServiceAccount> accountList = new ArrayList<ServiceAccount>();
+      for (ServiceAccount account : this.accounts.values()) 
       {
-        accountList.add(account);
+        if (account.user.fullName == user.fullName)
+        {
+          accountList.add(account);
+        }
       }
+      return accountList;
     }
-    return accountList;
+    return null;
+  }
+
+    /*
+   * @brief Attempts to get all of the associated accounts for the specified user from storage
+   * @param user The specified user
+   * @return All of the accounts linked to the specified user
+   */
+  public ArrayList<ServiceAccount> getAssociatedAccountsList(String userName)
+  {
+    if (null != userName)
+    {
+      ArrayList<ServiceAccount> accountList = new ArrayList<ServiceAccount>();
+      for (ServiceAccount account : this.accounts.values()) 
+      {
+        if (account.user.fullName == userName)
+        {
+          accountList.add(account);
+        }
+      }
+      return accountList;
+    }
+    return null;
   }
 
   /*

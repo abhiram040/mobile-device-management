@@ -66,7 +66,7 @@ public class BundleManagement implements PropertyChangeListener
         break;
 
       case ADD_PAC_BUNDLE_V1:
-        bundleName = messageContainer.messageContents.get(0);
+        bundleName = messageContainer.messageContents.get(0).substring(1);
         bundle = new Bundle(bundleName);
         isSuccessful = this.addBundle(bundle);
         if (isSuccessful)
@@ -100,7 +100,7 @@ public class BundleManagement implements PropertyChangeListener
         break;
 
       case LIST_BUNDLE_DETAILS:
-        bundleName = messageContainer.messageContents.get(0);
+        bundleName = messageContainer.messageContents.get(0).substring(1);
         bundle = this.getBundle(bundleName);
         returnMsg = new StringBuilder();
         returnMsg.append(bundle.name + " ");
@@ -117,7 +117,7 @@ public class BundleManagement implements PropertyChangeListener
           if (!isPaCBundle(bundle))
           {
             returnMsg.append(bundle.name + " ");
-            returnMsg.append(bundle.monthlyFees);
+            returnMsg.append("$" + bundle.monthlyFees + " ");
           }
         }
         break;

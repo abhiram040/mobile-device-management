@@ -249,7 +249,12 @@ public class UserManagement implements PropertyChangeListener
    */
   public User getUser(String fullName)
   {
-    return users.get(fullName);
+    if (null != users.get(fullName))
+    {
+      return users.get(fullName);
+    }
+    System.out.println("Specified user does not exist in the known users list.\n");
+    return null;
   }
 
   /*
