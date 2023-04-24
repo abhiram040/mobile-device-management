@@ -6,9 +6,9 @@ import java.beans.PropertyChangeSupport;
  */
 public class ResponseHandler
 {
-  private MessageContainer messageContainer;
   private PropertyChangeSupport support;
   private ServerMessageHandler serverMessageHandler;
+  private MessageContainer prevClientMessage;
 
   /*
    * @brief Constructor which sets the message handler and instantiates the PropertyChangeSupport
@@ -18,42 +18,37 @@ public class ResponseHandler
   {
     this.support = new PropertyChangeSupport(this);
     this.serverMessageHandler = serverMessageHandler;
+
+    this.prevClientMessage = new MessageContainer();
   }
 
   /*
    * @brief Binds the property change listener
    * @param pcl The specified property change listener
    */
-  public void addPropertyChangeListener(PropertyChangeListener pcl)
+  public void addPropertyChangeListener(PropertyChangeListener pc)
   {
-    this.support.addPropertyChangeListener(pcl);
+    this.support.addPropertyChangeListener(pc);
   }
 
   /*
    * @brief Removes the property change listener
    * @param pcl The specified property change listener
    */
-  public void removePropertyChangeListener(PropertyChangeListener pcl)
+  public void removePropertyChangeListener(PropertyChangeListener pc)
   {
-    this.support.removePropertyChangeListener(pcl);
+    this.support.removePropertyChangeListener(pc);
   }
 
   /*
-   * @brief Sends the client's message to the services
+   * @brief Retrieves the message from the client, and dispatches it to the listeners
    */
   public void handleResponse()
   {
-    MessageContainer messageContainer = serverMessageHandler.retrieveMessage();
+    MessageContainer latestClientMessage = serverMessageHandler.retrieveMessage();
+    this.support.firePropertyChange("Client Message", prevClientMessage, latestClientMessage);
 
-    // TODO: DEBUG - DELETE LATER
-    System.out.println("Message Option: " + messageContainer.menuOption);
-    for (String messageContent : messageContainer.messageContents)
-    {
-      System.out.println("Message Content: " + messageContent);
-    }
-
-    this.support.firePropertyChange("Client Message", this.messageContainer, messageContainer);
-    this.messageContainer = messageContainer;
+    prevClientMessage = latestClientMessage;
   }
 }
 
