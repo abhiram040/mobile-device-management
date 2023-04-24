@@ -1,5 +1,6 @@
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -187,13 +188,34 @@ public class AccountManagement implements PropertyChangeListener
           break;
         }
         associatedAccountList = getAssociatedAccountsList(user);
-        for(ServiceAccount acc : associatedAccountList)
+        for (ServiceAccount acc : associatedAccountList)
         {
           this.deleteServiceAccount(acc.phoneNumber);
         }
         isSuccessful = true;
         System.out.println("All associated accounts with " + user.fullName + " have been deleted");
         break;
+
+      case DELETE_USERS:
+      List<String> userNameList = userManagement.createUserNameList(messageContainer.messageContents);
+      User tempUser;
+      for (String name : userNameList)
+      {
+        tempUser = userManagement.getUser(name);
+        associatedAccountList = getAssociatedAccountsList(tempUser);
+        for (ServiceAccount acc : associatedAccountList)
+        {
+          this.deleteServiceAccount(acc.phoneNumber);
+        }
+      }
+      isSuccessful = userManagement.deleteUsers(userNameList);
+      if (isSuccessful)
+      {
+        returnMsg.append("Successfully deleted users!\n");
+        break;
+      }
+      returnMsg.append("Failed to delete users!\n");
+      break;
 
       default:
         isHandled = false;
@@ -340,15 +362,29 @@ public class AccountManagement implements PropertyChangeListener
   {
     Bundle bundle;
     if (!bundleManagement.isBundleRegistered(bundleName))
-        {
-          bundle = new Bundle(bundleName);
-          bundleManagement.addBundle(bundle);
-          return bundle;
-        }
-        else
-        {
-          bundle = bundleManagement.getBundle(bundleName);
-          return bundle;
-        }
+    {
+      bundle = new Bundle(bundleName);
+      bundleManagement.addBundle(bundle);
+      return bundle;
+    }
+    else
+    {
+      bundle = bundleManagement.getBundle(bundleName);
+      return bundle;
+    }
+  }
+
+  /*
+   * @brief Determines if a user has been deleted by user manager upon call
+   * @param userName The specified user name
+   * @return if user exists
+   */
+  public boolean doesUserStillExist(String userName)
+  {
+    if (null == userManagement.getUser(userName))
+    {
+      return false;
+    }
+    return true;
   }
 }

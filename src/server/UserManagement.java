@@ -99,17 +99,6 @@ public class UserManagement implements PropertyChangeListener
         returnMsg.append("Failed delete user!\n");
         break;
 
-      case DELETE_USERS:
-        List<String> userNameList = this.createUserNameList(messageContainer.messageContents);
-        isSuccessful = this.deleteUsers(userNameList);
-        if (isSuccessful)
-        {
-          returnMsg.append("Successfully deleted users!\n");
-          break;
-        }
-        returnMsg.append("Failed to delete users!\n");
-        break;
-
       case LIST_USER_DETAILS:
         user = this.getUser(messageContainer.messageContents.get(0).substring(1));
         returnMsg = new StringBuilder();
@@ -199,7 +188,7 @@ public class UserManagement implements PropertyChangeListener
   {
     //serverMessageHandler.sendMessage("User" + user.getName() + " added to the list of users.\n");
     List<String> userNameList = new ArrayList<>();
-    for (String userName: messageContents)
+    for (String userName : messageContents)
     {
       userNameList.add(userName);
     }
@@ -302,13 +291,14 @@ public class UserManagement implements PropertyChangeListener
     boolean successfulDelete = false;
     for (String userName : userNameList)
     {
+      this.lastDeletedUser = users.get(userName);
       successfulDelete = deleteUser(userName);
       if (successfulDelete == false)
       {
+        System.out.println("Could not remove atleast 1 user. Check above output for user removal details.\n");
         break;
       }
     }
-    System.out.println("Could not remove atleast 1 user. Check above output for user removal details.\n");
     return successfulDelete;
   }
 
