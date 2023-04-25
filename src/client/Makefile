@@ -7,6 +7,7 @@ JR = java
 
 CLASSES = \
 	MDMClient.java \
+	MDMReportService.java \
 	AddAccountV1Command.java \
 	CommandFactory.java \
 	AddAccountV2Command.java \
@@ -34,6 +35,8 @@ CLASSES = \
 	MenuOption.java \
 	StubCommand.java \
 	UI.java \
+	ClientUI.java \
+	ReportUI.java \
 	UpdateAccountCommand.java \
 	UpdateUserCommand.java
 
@@ -41,6 +44,9 @@ default: classes
 
 run:
 	$(JR) MDMClient
+
+report:
+	$(JR) MDMReportService
 
 classes: $(CLASSES:.java=.class)
 

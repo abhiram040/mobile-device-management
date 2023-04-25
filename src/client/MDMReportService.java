@@ -1,7 +1,7 @@
 /*
  * @brief Responsible for composing the necessary components for the client to run
  */
-public class MDMClient
+public class MDMReportService
 {
   private static UI ui;
   private static ClientMessageHandler clientMessageHandler;
@@ -28,8 +28,8 @@ public class MDMClient
    */
   public static void main(String[] args) 
   {
-    ui = new ClientUI();
-    int port = 1234;
+    ui = new ReportUI();
+    int port = 5555;
     clientMessageHandler = new ClientMessageHandler(port);
 
     while (true)

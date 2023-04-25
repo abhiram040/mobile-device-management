@@ -11,7 +11,7 @@ import java.util.Arrays;
  */
 public class ClientMessageHandler
 {
-  private final int port = 1234;
+  private final int port;
   private final int RETRY_TIME = 10; // 10 seconds
   private Socket socket;
   private ObjectOutputStream oos;
@@ -22,8 +22,9 @@ public class ClientMessageHandler
    *        the streams for sending/receiving messages. Loops until the server connection
    *        is successful.
    */
-  public ClientMessageHandler()
+  public ClientMessageHandler(int port)
   {
+    this.port = port;
     boolean isSuccessful = false;
     while (!isSuccessful)
     {
@@ -42,7 +43,6 @@ public class ClientMessageHandler
         }
       }
     }
-    
   }
   
   /*
@@ -108,7 +108,7 @@ public class ClientMessageHandler
    * @param messageFromServer The message in a packed format
    * @return The message in a usable format
    */
-  private MessageContainer parseServerMessage(String messageFromServer)
+  public MessageContainer parseServerMessage(String messageFromServer)
   {
     MessageContainer messageContainer = new MessageContainer();
     boolean isSuccessful = false;

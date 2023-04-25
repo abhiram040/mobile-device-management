@@ -105,4 +105,47 @@ public class CommandFactory
         return new StubCommand();
     }
   }
+
+  /*
+   * @brief Creates the related command to the inputted MenuOption
+   * @param The ReportOption ENUM for the related Command that needs to be built
+   * @return The constructed Command based on the inputted MenuOption. If the MenuOption
+   *         does not exist, then a StubCommand is constructed
+   */
+  public Command createCommand(ReportOption reportOption)
+  {
+    switch(reportOption)
+    {
+      case LIST_USER_DETAILS:
+        return new ListUserDetailsCommand("List User Details", Arrays.asList("Username"));
+
+      case LIST_ALL_USERS:
+        return new ListAllUsersCommand("List All Users' Names", new ArrayList<String>());
+
+      case LIST_ACCOUNT:
+        return new ListAccountCommand("List Account", Arrays.asList("Phone Number"));
+
+      case LIST_ACCOUNTS:
+        return new ListAccountsCommand("List Accounts", Arrays.asList("Username"));
+
+      case LIST_MONTHLY_FEES:
+        return new ListMonthlyFeesCommand("List Monthly Fees", Arrays.asList("Phone Number"));
+
+      case LIST_MONTHLY_FEES_ALL:
+        return new ListMonthlyFeesAllCommand("List Monthly Fees All Accounts", Arrays.asList("Username"));
+
+      case LIST_BUNDLE_DETAILS:
+        return new ListBundleDetailsCommand("List Bundle Details", Arrays.asList("Bundle Name"));
+
+      case LIST_ALL_PRE_BUNDLES:
+        return new ListAllPreBundlesCommand("List All Preconfigured Bundle Names", new ArrayList<String>());
+
+      case LIST_ALL_PAC_BUNDLES:
+        return new ListAllPacBundlesCommand("List All PaC Bundle Names", new ArrayList<String>());
+
+      default:
+        System.out.println("Invalid menuOption");
+        return new StubCommand();
+    }
+  }
 }

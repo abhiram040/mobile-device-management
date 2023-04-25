@@ -31,9 +31,8 @@ java MDMServer
 
 ### Design Patterns
 
-- TO BE FILLED IN
-- TO BE FILLED IN
-- TO BE FILLED IN
+- Observer (Refer to ResponseHandler.java)
+- Builder (Refer to ServerMessageHandlerBuilder.java)
 
 ## Client
 
@@ -60,6 +59,7 @@ java MDMClient
 - Command Pattern (Refer to Command.java and all other <COMMAND_TYPE>Command.java files)
 - Simple Factory (Refer to the CommandFactory.java)
 - Singleton (Refer to the CommandFactory.java)
+- Strategy (Refer to UI.java)
 
 ## Team Members
 

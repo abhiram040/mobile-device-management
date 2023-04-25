@@ -26,4 +26,3 @@ public enum MenuOption
   LIST_ALL_PRE_BUNDLES,
   LIST_ALL_PAC_BUNDLES
 }
-
