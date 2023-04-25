@@ -80,11 +80,7 @@ public class BundleManagement implements PropertyChangeListener
     boolean isSuccessful = false;
     boolean isHandled = true;
 
-    if (this.isLoggerSet = false)
-    {
-      this.setupLogger();
-      this.isLoggerSet = true;
-    }
+    this.setupLogger();
 
     // case wise handling of message passed down by server
     switch(messageContainer.menuOption)
@@ -184,6 +180,7 @@ public class BundleManagement implements PropertyChangeListener
         System.out.println("Nothing to be done by Bundle Manager.\n");
         break;
     }
+    fh.close();
     if (isHandled) {
       serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
     }

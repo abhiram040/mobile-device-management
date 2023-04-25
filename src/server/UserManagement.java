@@ -163,6 +163,7 @@ public class UserManagement implements PropertyChangeListener
         System.out.println("Nothing to be done by User Manager.\n");
         break;
     }
+    fh.close();
     if (isHandled) {
       serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
     }

@@ -93,11 +93,7 @@ public class AccountManagement implements PropertyChangeListener
     boolean isSuccessful = false;
     boolean isHandled = true;
 
-    if (this.isLoggerSet = false)
-    {
-      this.setupLogger();
-      this.isLoggerSet = true;
-    }
+    this.setupLogger();
 
     switch(messageContainer.menuOption)
     {
@@ -252,6 +248,7 @@ public class AccountManagement implements PropertyChangeListener
         System.out.println("Nothing to be done by Account Manager.\n");
         break;
     }
+    fh.close();
     if (isHandled) {
       serverMessageHandler.buildAndSendResponseMessage(messageContainer.menuOption, isSuccessful, returnMsg.toString());
     }
