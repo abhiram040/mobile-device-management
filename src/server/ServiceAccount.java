@@ -48,4 +48,9 @@ public class ServiceAccount
     }
     this.bundle = newBundle;
   }
+
+  public String getAccountDetails()
+  {
+    return "Phone Number: " + phoneNumber + " Associated User Name: " + user.fullName + " Bundle: " + bundle.name;
+  }
 }

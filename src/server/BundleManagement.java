@@ -2,6 +2,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+import java.util.logging.FileHandler;
+import java.util.logging.SimpleFormatter;
+import java.io.IOException;
 
 /*
  * @brief Responsible for handling all interactions with bundles
@@ -11,6 +15,9 @@ public class BundleManagement implements PropertyChangeListener
   Map<String, Bundle> bundles = new HashMap<>();
   private MessageContainer messageContainer;
   ServerMessageHandler serverMessageHandler;
+  Logger logger = Logger.getLogger("MDMLogger");
+  FileHandler fh;
+  private boolean isLoggerSet = false;
 
   /*
    * @brief Default constructor
@@ -38,6 +45,28 @@ public class BundleManagement implements PropertyChangeListener
     this.performRequestedTask();
   }
 
+   /*
+   * @brief sets up the logger for the report logs
+   */
+  private void setupLogger()
+  {
+    try
+    {
+      fh = new FileHandler("./logs/AutomaticBundleReportLog.log", true);
+      logger.addHandler(fh);
+      SimpleFormatter formatter = new SimpleFormatter();  
+      fh.setFormatter(formatter);
+    }
+    catch (SecurityException e)
+    {  
+      e.printStackTrace();  
+    }
+    catch (IOException e)
+    {  
+      e.printStackTrace();  
+    } 
+  }
+
   /*
    * @brief Attempts to execute the requested task, builds the response message, and sends it
    */
@@ -50,6 +79,13 @@ public class BundleManagement implements PropertyChangeListener
     StringBuilder returnMsg = new StringBuilder();
     boolean isSuccessful = false;
     boolean isHandled = true;
+
+    if (this.isLoggerSet = false)
+    {
+      this.setupLogger();
+      this.isLoggerSet = true;
+    }
+
     // case wise handling of message passed down by server
     switch(messageContainer.menuOption)
     {

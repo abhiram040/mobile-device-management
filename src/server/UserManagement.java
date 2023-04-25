@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.lang.Thread;
+import java.util.logging.Logger;
+import java.util.logging.FileHandler;
+import java.util.logging.SimpleFormatter;
+import java.io.IOException;
 
 /*
  * @brief Responsible for handling all interactions with users
@@ -15,6 +19,9 @@ public class UserManagement implements PropertyChangeListener
   private MessageContainer messageContainer;
   ServerMessageHandler serverMessageHandler;
   User lastDeletedUser;
+  Logger logger = Logger.getLogger("MDMLogger");
+  FileHandler fh;
+  private boolean isLoggerSet = false;
 
   /*
    * @brief Default constructor
@@ -44,6 +51,29 @@ public class UserManagement implements PropertyChangeListener
   }
 
   /*
+   * @brief sets up the logger for the report logs
+   */
+  private void setupLogger()
+  {
+    boolean isHandlerAdded = false;
+    try
+    {
+      fh = new FileHandler("./logs/AutomaticUserReportLog.log", true);
+      logger.addHandler(fh);
+      SimpleFormatter formatter = new SimpleFormatter();
+      fh.setFormatter(formatter);
+    }
+    catch (SecurityException e)
+    {  
+      e.printStackTrace();  
+    }
+    catch (IOException e)
+    {  
+      e.printStackTrace();  
+    } 
+  }
+
+  /*
    * @brief Attempts to execute the requested task, builds the response message, and sends it
    */
   public void performRequestedTask()
@@ -53,6 +83,9 @@ public class UserManagement implements PropertyChangeListener
     StringBuilder returnMsg = new StringBuilder();
     boolean isSuccessful = false;
     boolean isHandled = true;
+
+    this.setupLogger();
+
     switch(messageContainer.menuOption)
     {
       case ADD_USER:
@@ -209,7 +242,8 @@ public class UserManagement implements PropertyChangeListener
       return false;
     }
     users.put(user.fullName, user);
-    System.out.println("User: " + user.getName() + " added to the list of users.\n");
+    // System.out.println("User: " + user.getName() + " added to the list of users.\n");
+    logger.info("User added! The user's info is: " + user.toString() + "\n");
     return true;
   }
 
@@ -255,10 +289,12 @@ public class UserManagement implements PropertyChangeListener
   public boolean updateUser(User user)
   {
     User userUpdate = users.get(user.fullName);
+    String tempString = userUpdate.toString();
     if (users.containsKey(user.fullName))
     {
       userUpdate.address = user.address;
       userUpdate.email = user.email;
+      logger.info("User updated! The user's info was: " + tempString + " And is now: " + userUpdate.toString() + "\n");
       return true;
     }
     return false;
@@ -276,7 +312,8 @@ public class UserManagement implements PropertyChangeListener
       return false;
     }
     System.out.println("WARNING: Removing user: " + fullName + " and all associated accounts.\n");
-    this.lastDeletedUser = users.get(fullName);
+    lastDeletedUser = users.get(fullName);
+    logger.info("User deleted! The user's info was: " + lastDeletedUser.toString() + " and all associated accounts are to be removed.\n");
     users.remove(fullName);
     return true;
   }

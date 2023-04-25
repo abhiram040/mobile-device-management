@@ -23,7 +23,7 @@ public class MDMServer
    */
   public static void main(String[] args) 
   {
-    serverMessageHandler = new ServerMessageHandler();
+    serverMessageHandler = new ServerMessageHandlerBuilder().port(1234).build();
     responseHandler = new ResponseHandler(serverMessageHandler);
 
     userManagement = new UserManagement(serverMessageHandler);

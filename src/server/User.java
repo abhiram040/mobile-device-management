@@ -98,6 +98,6 @@ public class User
    */
   @Override
   public String toString() {
-    return "User: " + this.fullName + " Addres: " + this.address + " Email: " + this.email;
+    return "User: " + this.fullName + " Address: " + this.address + " Email: " + this.email;
   }
 }

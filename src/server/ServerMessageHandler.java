@@ -2,6 +2,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * @brief Responsible for sending messages to the client, receiving messages
@@ -9,18 +11,20 @@ import java.net.Socket;
  */
 public class ServerMessageHandler
 {
-  private final int port = 1234;
+  private int port = 8080;
   private ServerSocket server;
   private Socket socket;
   private ObjectOutputStream oos;
   private ObjectInputStream ois;
+  List<Socket> clients = new ArrayList<>();
 
   /*
    * @brief Constructor that creates the connection to the client and creates
    *        the streams for sending/receiving messages
    */
-  public ServerMessageHandler()
+  public ServerMessageHandler(int portNo)
   {
+    this.port = portNo;
     try
     {
       server = new ServerSocket(port);

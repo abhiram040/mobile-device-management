@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+import java.util.logging.FileHandler;
+import java.util.logging.SimpleFormatter;
+import java.io.IOException;
 
 /*
  * @brief Responsible for handling all interactions with accounts
@@ -15,6 +19,9 @@ public class AccountManagement implements PropertyChangeListener
   ServerMessageHandler serverMessageHandler;
   ArrayList<ServiceAccount> accountList = new ArrayList<ServiceAccount>();
   ArrayList<ServiceAccount> associatedAccountList = new ArrayList<ServiceAccount>();
+  Logger logger = Logger.getLogger("MDMLogger");
+  FileHandler fh;
+  private boolean isLoggerSet = false;
 
   // this class is currently acting as the primary manager to avoid
   // any circular dependancies. Will likely look into replacing referencing
@@ -26,7 +33,7 @@ public class AccountManagement implements PropertyChangeListener
    * @brief Default constructor
    */
   public AccountManagement()
-  {
+  { 
   }
 
   /*
@@ -48,6 +55,28 @@ public class AccountManagement implements PropertyChangeListener
     this.performRequestedTask();
   }
 
+   /*
+   * @brief sets up the logger for the report logs
+   */
+  private void setupLogger()
+  {
+    try
+    {
+      fh = new FileHandler("./logs/AutomaticAccountReportLog.log", true);
+      logger.addHandler(fh);
+      SimpleFormatter formatter = new SimpleFormatter();  
+      fh.setFormatter(formatter);
+    }
+    catch (SecurityException e)
+    {  
+      e.printStackTrace();  
+    }
+    catch (IOException e)
+    {  
+      e.printStackTrace();  
+    } 
+  }
+
   /*
    * @brief Attempts to execute the requested task, builds the response message, and sends it
    */
@@ -63,6 +92,12 @@ public class AccountManagement implements PropertyChangeListener
     ServiceAccount account;
     boolean isSuccessful = false;
     boolean isHandled = true;
+
+    if (this.isLoggerSet = false)
+    {
+      this.setupLogger();
+      this.isLoggerSet = true;
+    }
 
     switch(messageContainer.menuOption)
     {
@@ -82,14 +117,9 @@ public class AccountManagement implements PropertyChangeListener
         break;
 
       case ADD_ACCOUNT_V2:
-        account = this.getServiceAccount(messageContainer.messageContents.get(0));
-        isSuccessful = this.addServiceAccount(account);
-        if (isSuccessful)
-        {
-          returnMsg.append("Successfully added service account!\n");
-          break;
-        }
-        returnMsg.append("Failed to add service account: Account phone number not associated to a recognized account.\n");
+        String accountID = messageContainer.messageContents.get(0);
+        returnMsg.append("Adding account by ID is not supported in this release. Currently not enough information to construct an account.\n");
+        isSuccessful = false;
         break;
 
       case DELETE_ACCOUNT:
@@ -266,6 +296,7 @@ public class AccountManagement implements PropertyChangeListener
       return false;
     }
     accounts.put(phoneNumber, newAccount);
+    logger.info("Account created! Details are: " + getServiceAccount(phoneNumber).getAccountDetails());
     return true;
   }
 
@@ -294,10 +325,13 @@ public class AccountManagement implements PropertyChangeListener
   public boolean updateServiceAccount(String phoneNumber, Bundle newBundle)
   {
     ServiceAccount account = accounts.get(phoneNumber);
+    String previousInfo = account.getAccountDetails();
 
     if (account != null)
     {
       account.changeBundle(newBundle);
+      logger.info("Account updated! Details were: " + previousInfo + " And are now: " + getServiceAccount(phoneNumber).getAccountDetails());
+
       return true;
     }
     return false;
@@ -316,6 +350,7 @@ public class AccountManagement implements PropertyChangeListener
       return false;
     }
     success = this.userManagement.removeAssociatedAccountsNo(accounts.get(phoneNumber).user, phoneNumber);
+    logger.info("Account deleted! Details were: " + getServiceAccount(phoneNumber).getAccountDetails());
     accounts.remove(phoneNumber);
     return success;
   }
@@ -372,19 +407,5 @@ public class AccountManagement implements PropertyChangeListener
       bundle = bundleManagement.getBundle(bundleName);
       return bundle;
     }
-  }
-
-  /*
-   * @brief Determines if a user has been deleted by user manager upon call
-   * @param userName The specified user name
-   * @return if user exists
-   */
-  public boolean doesUserStillExist(String userName)
-  {
-    if (null == userManagement.getUser(userName))
-    {
-      return false;
-    }
-    return true;
   }
 }
